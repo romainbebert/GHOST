@@ -30,13 +30,10 @@
 
 #pragma once
 
-#include <cassert>
 #include <limits>
-#include <random>
 #include <algorithm>
 #include <vector>
 #include <map>
-#include <cmath>
 #include <chrono>
 #include <memory>
 
@@ -263,9 +260,6 @@ namespace ghost
 
     chrono::duration<double,micro> timerPostProcessSat(0);
     chrono::duration<double,micro> timerPostProcessOpt(0);
-
-    random_device	rd;
-    mt19937	rng( rd() );
 
     if( _objective == nullptr )
       _objective = make_shared< NullObjective<TypeVariable> >();
