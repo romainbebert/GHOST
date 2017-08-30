@@ -82,15 +82,17 @@ namespace ghost
     bool	_isOptimization;	// A boolean to know if it is a satisfaction or optimization run.
     bool	_permutationProblem;	// A boolean to know if it is a permutation problem or not.
 
-    struct VarComp {
+    int		_varOffset;		// Offset to shift variables id, sich that the first would be shifted to 0.
+    int		_ctrOffset;		// Same for constraints.
+    
+    struct VarComp
+    {
       bool operator()( const TypeVariable& lhs, const TypeVariable& rhs ) const
       {
 	return lhs.get_id() < rhs.get_id();
       }
     };
     
-    /////////////////////////
-    // Bonne idée de mettre mutable ici ? On peut s'en débarasser ?
     mutable map< TypeVariable,
 		 vector<TypeConstraint>,
 		 VarComp > _mapVarCtr;	// Map to know in which constraints are each variable.
@@ -251,6 +253,16 @@ namespace ghost
     // The only parameter of Solver<TypeVariable, TypeConstraint>::solve outside timeouts
     int tabuTime = _vecVariables->size() - 1;
 
+    _varOffset = (*_vecVariables)[0].get_id();
+    for( auto& v : (*_vecVariables) )
+      if( v.get_id() < _varOffset )
+	_varOffset = v.get_id();
+    
+    _ctrOffset = (*_vecConstraints)[0].get_id();
+    for( auto& c : (*_vecConstraints) )
+      if( c.get_id() < _ctrOffset )
+	_ctrOffset = c.get_id();
+    
     chrono::duration<double,micro> elapsedTime(0);
     chrono::duration<double,micro> elapsedTimeOptLoop(0);
     chrono::time_point<chrono::steady_clock> start;
@@ -337,11 +349,11 @@ namespace ghost
 	    //update_better_configuration( _bestSatCost, _bestSatCostTour, finalSolution );
 
 	  // freeze the variable a bit
-	  _weakTabuList[ worstVariable->get_id() ] = (int)(tabuTime / 4);
+	  _weakTabuList[ worstVariable->get_id() - _varOffset ] = (int)(tabuTime / 4);
 	}
 	else // local minima
 	  // Mark worstVariable as weak tabu for tabuTime iterations.
-	  _weakTabuList[ worstVariable->get_id() ] = tabuTime;
+	  _weakTabuList[ worstVariable->get_id() - _varOffset ] = tabuTime;
       
 	elapsedTimeOptLoop = chrono::steady_clock::now() - startOptLoop;
 	elapsedTime = chrono::steady_clock::now() - start;
@@ -391,7 +403,7 @@ namespace ghost
     // Useful if the user prefer to directly use the vector of TypeVariables
     // to manipulate and exploit the solution.
     for( auto& v : *_vecVariables )
-      v.set_value( finalSolution[ v.get_id() ] );
+      v.set_value( finalSolution[ v.get_id() - _varOffset ] );
     
 #if defined(DEBUG) || defined(BENCH)
     cout << "############" << "\n";
@@ -431,7 +443,7 @@ namespace ghost
     for( auto& c : *_vecConstraints )
     {
       cost = c.cost();
-      costConstraints[ c.get_id() ] = cost;
+      costConstraints[ c.get_id() - _ctrOffset ] = cost;
       satisfactionCost += cost;    
     }
 
@@ -449,10 +461,10 @@ namespace ghost
 
     for( auto& v : *_vecVariables )
     {
-      id = v.get_id();
+      id = v.get_id() - _varOffset;
     
       for( auto& c : _mapVarCtr[ v ] )
-	costVariables[ id ] += costConstraints[ c.get_id() ];
+	costVariables[ id ] += costConstraints[ c.get_id() - _ctrOffset ];
 
       if( _weakTabuList[ id ] == 0 )
 	costNonTabuVariables[ id ] = costVariables[ id ];
@@ -499,7 +511,7 @@ namespace ghost
       }
 
       for( auto& v : *_vecVariables )
-	v.set_value( bestValues[ v.get_id() ] );
+	v.set_value( bestValues[ v.get_id() - _varOffset ] );
     }
   }
 
@@ -533,7 +545,7 @@ namespace ghost
     best = current;
 
     for( auto& v : *_vecVariables )
-      configuration[ v.get_id() ] = v.get_value();
+      configuration[ v.get_id() - _varOffset ] = v.get_value();
   }
   
   template <typename TypeVariable, typename TypeConstraint>
@@ -547,7 +559,7 @@ namespace ghost
   
     for( auto& v : *_vecVariables )
     {
-      id = v.get_id();
+      id = v.get_id() - _varOffset;
       if( !freeVariables || _weakTabuList[ id ] == 0 )
       {
 	if( worstVariableCost < costVariables[ id ] )
@@ -576,7 +588,7 @@ namespace ghost
 
     variable->set_value( value );
     for( auto& c : _mapVarCtr[ *variable ] )
-      newCurrentSatCost += ( c.cost() - costConstraints[ c.get_id() ] );
+      newCurrentSatCost += ( c.cost() - costConstraints[ c.get_id() - _ctrOffset ] );
 
     return newCurrentSatCost;
   }
@@ -596,13 +608,13 @@ namespace ghost
   
     for( auto& c : _mapVarCtr[ *worstVariable ] )
     {
-      newCurrentSatCost += ( c.cost() - costConstraints[ c.get_id() ] );
-      compted[ c.get_id() ] = true;
+      newCurrentSatCost += ( c.cost() - costConstraints[ c.get_id() - _ctrOffset ] );
+      compted[ c.get_id() - _ctrOffset ] = true;
     }
   
     for( auto& c : _mapVarCtr[ otherVariable ] )
-      if( !compted[ c.get_id() ] )
-	newCurrentSatCost += ( c.cost() - costConstraints[ c.get_id() ] );
+      if( !compted[ c.get_id() - _ctrOffset ] )
+	newCurrentSatCost += ( c.cost() - costConstraints[ c.get_id() - _ctrOffset ] );
 
     // We must roll back to the previous state before returning the new cost value. 
     tmp = worstVariable->get_value();
@@ -654,7 +666,7 @@ namespace ghost
     variable->set_value( bestValue );
     currentSatCost = bestCost;
     for( auto& c : _mapVarCtr[ *variable ] )
-      costConstraints[ c.get_id() ] = c.cost();
+      costConstraints[ c.get_id() - _ctrOffset ] = c.cost();
 
     compute_variables_costs( costConstraints, costVariables, costNonTabuVariables );
   }
@@ -710,13 +722,13 @@ namespace ghost
   
     for( auto& c : _mapVarCtr[ *variable ] )
     {
-      newCurrentSatCost += ( c.cost() - costConstraints[ c.get_id() ] );
-      compted[ c.get_id() ] = true;
+      newCurrentSatCost += ( c.cost() - costConstraints[ c.get_id() - _ctrOffset ] );
+      compted[ c.get_id() - _ctrOffset ] = true;
     }
   
     for( auto& c : _mapVarCtr[ *bestVarToSwap ] )
-      if( !compted[ c.get_id() ] )
-	newCurrentSatCost += ( c.cost() - costConstraints[ c.get_id() ] );
+      if( !compted[ c.get_id() - _ctrOffset ] )
+	newCurrentSatCost += ( c.cost() - costConstraints[ c.get_id() - _ctrOffset ] );
 
     compute_variables_costs( costConstraints, costVariables, costNonTabuVariables );
   }
