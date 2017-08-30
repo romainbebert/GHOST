@@ -396,7 +396,7 @@ namespace ghost
     cout << "Number of optization loops: " << optLoop << "\n" 
 	 << "Number of satisfaction loops: " << satLoop << "\n";
 
-#ifndef NDEBUG
+#if defined(DEBUG) || defined(BENCH)
     cout << "############" << "\n";
       
     if( !_isOptimization )
