@@ -393,9 +393,6 @@ namespace ghost
     for( auto& v : *_vecVariables )
       v.set_value( finalSolution[ v.get_id() ] );
     
-    cout << "Number of optization loops: " << optLoop << "\n" 
-	 << "Number of satisfaction loops: " << satLoop << "\n";
-
 #if defined(DEBUG) || defined(BENCH)
     cout << "############" << "\n";
       
