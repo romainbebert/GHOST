@@ -36,39 +36,57 @@ public:
   Variable& get_var( int index ) const { return (*variables)[index]; }
 };
 
-class MyObjective : public Objective<Variable> {
-	double required_cost(vector<Variable> variables) const {
-		vector<int> preferred = {3,4,7,11,18};
-		int tot = 0;
 
-		for (int i = 0; i < 5; ++i) {
-			tot += abs(variables[i].getValue() - preferred[i]);
+
+template <typename TypeVariable>
+class MyObjective : public Objective<TypeVariable> {
+
+	private :
+		double required_cost(vector<TypeVariable> *variables) const {
+			vector<int> preferred = {3,4,7,11,18};
+			int tot = 0;
+
+			for (int i = 0; i < 5; ++i) {
+				tot += abs((*variables)[i].get_value() - preferred[i]);
+			}
+
+			return tot;
 		}
 
-		return tot;
-	}
-
 	public:
-		MyObjective(const string& name) : Objective(name){ }
+		MyObjective(const string& name) : Objective<TypeVariable>(name) {}
 
 };
 
+int main() {
 
-vector<int> list = {1,2,5,7,13,21};
+	vector<int> list = {1,2,5,7,13,21};
 
-//Domain list = Domain(skis);
+	//Domain list = Domain(skis);
 
-vector<Variable> vars = { new Variable("3","3", list), new Variable("4","4", list), 
-					 new Variable("7","7", list), new Variable("11","11", list),
-					 new Variable("18","18", list) } ;
+	vector<Variable> vars = { Variable("3","3", list), Variable("4","4", list), 
+						 Variable("7","7", list), Variable("11","11", list),
+						 Variable("18","18", list) } ;
 
 
-vector<MyConstraint> *ctr;
-ctr.push_back(new MyConstraint(&vars));
+	vector<MyConstraint> ctr;
+	ctr.push_back({&vars});
 
-MyObjective *obj = new MyObjective("Shortest differences");
+	MyObjective<Variable> obj("littlest differences");
 
-//Solver<Variable,MyConstraint> solver(&vars, &list, ctr, obj);
-Solver<Variable,MyConstraint> solver = new Solver<Variable,MyConstraint>(&vars, ctr, obj);
+	//Solver<Variable,MyConstraint> solver(&vars, &list, ctr, obj);
+	Solver<Variable,MyConstraint> solver(vars, ctr, make_shared<MyObjective<Variable>>(obj));
 
-solver.solve(20,150);
+	double finalCost;
+	vector<int> finalSolution;
+
+	solver.solve(finalCost, finalSolution,10);
+
+	cout << "final cost = "<< finalCost << " | solution : ";
+    for (int& e : finalSolution)
+        cout << e << " ";
+    cout << endl;
+
+    return 0;
+
+}
