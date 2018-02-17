@@ -37,71 +37,31 @@
 #include "targetSelectionConstraint.hpp"
 
 using namespace std;
+using namespace ghost;
 
-namespace ghost
+targetSelectionConstraint::targetSelectionConstraint(const vector<Variable> *variables, vector<Unit> allies, vector<UnitEnemy> enemies) 
+	: Constraint<Variable>(variables), allies(allies) {}
+
+double targetSelectionConstraint::required_cost(Variable &currentUnit, 
+												const std::vector<int> &newTarget,
+												shared_ptr< Objective<Variable> > objective) 
 {
-  TargetSelectionConstraint::TargetSelectionConstraint( const vector< Unit > *variables, const TargetSelectionDomain *domain )
-    : Constraint<Unit, TargetSelectionDomain>(variables, domain) { }
+	double conflicts = 0.;
+	for(int i = 0; i < variables->size(); ++i) {
+		Unit currUnit = allies.get(i);
+		// A unit u is badly assigned to a target t iif:
+	    // 1. u can shoot
+	    // 2. u has at least one living reachable target in its range
+	    // 3. t is the dummy target (-1) or t in unreachable from u or t is dead
+		if( currUnit.canShoot() && !currUnit.getLivingEnemiesInRange(enemies).empty() 
+			&& ( currUnit.getValue() == -1 || !enemies.get(currUnit.getValue()).isInRangeAndAlive(currUnit) ) ) 
+		{
+			++conflicts;
+		}
 
+		if( currUnit.getEnemiesInRange(enemies).empty() && currUnit.getValue() != -1 ) 
+			++conflicts;
+	}
 
-  double TargetSelectionConstraint::v_cost( vector<double> &varCost ) const
-  {
-    double conflicts = 0.;
-
-    for( auto it = variables->begin() ; it != variables->end() ; ++it )
-    {
-      // A unit u is badly assigned to a target t iif:
-      // 1. u can shoot
-      // 2. u has at least one living reachable target in its range
-      // 3. t is the dummy target (-1) or t in unreachable from u or t is dead
-      if( it->canShoot()
-	  && !domain->getLivingEnemiesInRange( *it ).empty()
-	  && ( it->getValue() == -1
-	       ||
-	       !it->isInRangeAndAlive( domain->getEnemyData( it->getValue() ) ) ) )
-      {
-	++conflicts;
-	++varCost[ it->getId() ];
-      }
-
-      // Other situation: u has no living reachable targets but is not affected to -1
-      if( domain->getLivingEnemiesInRange( *it ).empty() && it->getValue() != -1 )
-      {
-	++conflicts;
-	++varCost[ it->getId() ];
-      }
-    }
-    
-    return conflicts;
-  }
-
-  vector<double> TargetSelectionConstraint::v_simulateCost( Unit &currentUnit,
-							    const vector<int> &newTarget,
-							    vector< vector<double> > &vecVarSimCosts,
-							    shared_ptr< Objective< Unit, TargetSelectionDomain > > objective )
-  {
-    vector<double> simCosts( domain->getSize(), -1. );
-    int backup = currentUnit.getValue();
-    
-    if( objective )
-      objective->resetHelper();
-
-    for( const auto &target : newTarget )
-    {
-      domain->clear( currentUnit );
-      currentUnit.setValue( target );
-      domain->add( currentUnit );
-      
-      simCosts[target + 1] = v_cost( vecVarSimCosts[target + 1] );
-    
-      if( objective )
-	objective->setHelper( currentUnit, variables, domain );
-    }
-  
-    domain->clear( currentUnit );
-    currentUnit.setValue( backup );
-    domain->add( currentUnit );
-    
-    return simCosts;
-  }
+	return conflicts;
 }

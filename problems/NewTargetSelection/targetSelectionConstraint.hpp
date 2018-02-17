@@ -50,6 +50,9 @@ class TargetSelectionConstraint : public Constraint<Variable> {
 	double required_cost(Variable &currentUnit, const vector<int> &newTarget,
 						 shared_ptr< Objective<Variable>> objective) const override;
 
+	private:
+		vector<Unit> allies;
+
 
 	public:
 		TargetSelectionConstraint(const std::vector<Variable>*);

@@ -211,7 +211,9 @@ namespace ghost
     
     double doDamage( vector<UnitEnemy> &vecEnemy );
     vector<double> computeDamage( vector<UnitEnemy> *vecEnemy ) const;
-    
+    vector<UnitEnemy> getLivingEnemiesInRange(vector<UnitEnemy> enemies) const;
+    vector<UnitEnemy> getLivingEnemiesInRange(vector<UnitEnemy> enemies) const;
+
     inline void	swapValue( Unit &other )	{ std::swap( value, other.value ); }
 
     inline bool operator==( const Unit & other ) { return id == other.id; }

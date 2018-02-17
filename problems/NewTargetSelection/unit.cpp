@@ -282,6 +282,26 @@ namespace ghost
       coord(other.coord)
   { }
 
+  vector<UnitEnemy> Unit::getEnemiesInRange( vector<UnitEnemy> enemies) const {
+    vector<UnitEnemy> inRange;
+
+    for(const auto &e : *enemies)
+      if( this.isInRange(e) )
+        inRange.push_back(e);
+
+      return inRange;
+  }
+
+  vector<UnitEnemy> Unit::getLivingEnemiesInRange( vector<UnitEnemy> enemies) const {
+    vector<UnitEnemy> inRange;
+
+    for(const auto &e : *enemies)
+      if( this.isInRangeAndAlive(e) )
+        inRange.push_back(e);
+
+      return inRange;
+  }
+
   vector<double> Unit::computeDamage( vector<UnitEnemy> *vecUnit ) const
   {
     vector<double> hits( vecUnit->size(), 0. );
