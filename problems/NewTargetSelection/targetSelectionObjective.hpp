@@ -49,7 +49,7 @@ class TargetSelectionObjective : public Objective<Variable> {
 	protected:
 		//int expert_heuristic_variable(const vector<Variable>);
 		//double expert_postprocess_satisfaction( vector<Variable> *vecUnits, 
-		//	double &bestCost, vector<Variable> &bestSolution, double sat_timeout) const; 
+		//double &bestCost, vector<Variable> &bestSolution, double sat_timeout) const; 
 };
 
 /*************/
@@ -58,7 +58,7 @@ class TargetSelectionObjective : public Objective<Variable> {
 class MaxDamage : public TargetSelectionObjective {
 	public:
 		MaxDamage();
-		double require_cost(vector<Variable> *vecVariables) const;
+		double required_cost(vector<Variable> *vecVariables) const;
 };
 
 /*************/
@@ -67,5 +67,5 @@ class MaxDamage : public TargetSelectionObjective {
 class MaxKill : public TargetSelectionObjective {
 	public:
 		MaxKill();
-		double require_cost(vector<Variable> *vecVariables) const;
+		double required_cost(vector<Variable> *vecVariables) const;
 }

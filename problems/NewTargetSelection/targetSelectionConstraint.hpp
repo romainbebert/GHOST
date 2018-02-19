@@ -35,11 +35,11 @@
 #include <memory>
 #include <algorithm>
 #include <string>
+#include <ghost/objective.hpp>
+#include <ghost/constraint.hpp>
 
-#include "../../src/constraint.hpp"
 #include "unit.hpp"
 #include "targetSelectionDomain.hpp"
-#include "objective.hpp"
 #include "unitMap.hpp"
 
 using namespace std;

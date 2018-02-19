@@ -39,28 +39,54 @@
 using namespace std;
 using namespace ghost;
 
-targetSelectionConstraint::targetSelectionConstraint(const vector<Variable> *variables, vector<Unit> allies, vector<UnitEnemy> enemies) 
-	: Constraint<Variable>(variables), allies(allies) {}
+// targetSelectionConstraint::targetSelectionConstraint(const vector<Variable> *variables, vector<Unit> allies, vector<UnitEnemy> enemies) 
+// 	: Constraint<Variable>(variables), allies(allies) {}
+
+// double targetSelectionConstraint::required_cost(Variable &currentUnit, 
+// 												const std::vector<int> &newTarget,
+// 												shared_ptr< Objective<Variable> > objective) 
+// {
+// 	double conflicts = 0.;
+// 	for(int i = 0; i < variables->size(); ++i) {
+//		Variable currVar = variables->get(i);
+// 		Unit currUnit = allies.get(i);
+// 		// A unit u is badly assigned to a target t iif:
+// 	    // 1. u can shoot
+// 	    // 2. u has at least one living reachable target in its range
+// 	    // 3. t is the dummy target (-1) or t in unreachable from u or t is dead
+// 		if( currUnit.canShoot() && !currUnit.getLivingEnemiesInRange(enemies).empty() 
+// 			&& ( currVar.getValue() == -1 || !enemies.get(currVar.getValue()).isInRangeAndAlive(currUnit) ) ) 
+// 		{
+// 			++conflicts;
+// 		}
+		//If no enemies in range and variable isn't set to -1
+// 		if( currUnit.getEnemiesInRange(enemies).empty() && currVar.getValue() != -1 ) 
+// 			++conflicts;
+// 	}
+
+// 	return conflicts;
+// }
+
+targetSelectionConstraint::targetSelectionConstraint(const Variable *variable, Unit unit, vector<UnitEnemy> enemies) 
+	: Constraint<Variable>(variable), allies(unit), enemies(enemies) {}
 
 double targetSelectionConstraint::required_cost(Variable &currentUnit, 
 												const std::vector<int> &newTarget,
 												shared_ptr< Objective<Variable> > objective) 
 {
 	double conflicts = 0.;
-	for(int i = 0; i < variables->size(); ++i) {
-		Unit currUnit = allies.get(i);
-		// A unit u is badly assigned to a target t iif:
-	    // 1. u can shoot
-	    // 2. u has at least one living reachable target in its range
-	    // 3. t is the dummy target (-1) or t in unreachable from u or t is dead
-		if( currUnit.canShoot() && !currUnit.getLivingEnemiesInRange(enemies).empty() 
-			&& ( currUnit.getValue() == -1 || !enemies.get(currUnit.getValue()).isInRangeAndAlive(currUnit) ) ) 
-		{
-			++conflicts;
-		}
-
-		if( currUnit.getEnemiesInRange(enemies).empty() && currUnit.getValue() != -1 ) 
-			++conflicts;
+	// A unit u is badly assigned to a target t iif:
+    // 1. u can shoot
+    // 2. u has at least one living reachable target in its range
+    // 3. t is the dummy target (-1) or t in unreachable from u or t is dead
+	if( unit.canShoot() && !unit.getLivingEnemiesInRange(enemies).empty() 
+		&& ( variable.getValue() == -1 || !enemies.get(variable.getValue()).isInRangeAndAlive(currUnit) ) ) 
+	{
+		++conflicts;
+	}
+	//If no enemies in range and variable isn't set to -1
+	if( unit.getEnemiesInRange(enemies).empty() && variable.getValue() != -1 ) 
+		++conflicts;
 	}
 
 	return conflicts;

@@ -296,7 +296,7 @@ namespace ghost
     vector<UnitEnemy> inRange;
 
     for(const auto &e : *enemies)
-      if( this.isInRangeAndAlive(e) )
+      if( e.isInRangeAndAlive(this) )
         inRange.push_back(e);
 
       return inRange;
@@ -350,6 +350,55 @@ namespace ghost
  
     return hits;
   }
+
+  //Compute damage if we change Unit to not be a variable anymore
+  vector<double> Unit::computeDamage( int val, vector<UnitEnemy> *vecEnemy ) const {
+    vector<double> hits( vecUnit->size(), 0. );
+    if( distanceFrom( vecUnit->at( val ) ) >= getRangeMin() && distanceFrom( vecUnit->at( val ) ) <= getRangeMax() )
+    {
+      UnitEnemy *u = &vecUnit->at( val );
+      double hit;    
+
+      if( !isSplash() )
+      {
+        hit = ( data.damage - u->data.armor ) * coeffDamageType( data.damageType, u->data.size );
+        hits[val] = std::max( hit, 0.5 );
+      }
+      else
+      {
+        for( int i = 0 ; i < vecUnit->size() ; ++i )
+        {
+          if( i == val )
+          {
+            hit = ( data.damage - u->data.armor ) * coeffDamageType( data.damageType, u->data.size );
+            hits[val] = std::max( hit, 0.5 );     
+          }
+          else if( !vecUnit->at( i ).isDead() )
+          {
+            double dist = u->distanceFrom( vecUnit->at( i ) );
+            if( dist <= data.splashRadius.ray1 )
+            {
+              hit = ( data.damage - vecUnit->at( i ).data.armor ) * coeffDamageType( data.damageType, vecUnit->at( i ).data.size );
+              hits[ i ] = std::max( hit, 0.5 );     
+            }
+            else if( dist > data.splashRadius.ray1 && dist <= data.splashRadius.ray2 )
+            {
+              hit = ( ( data.damage * 0.5 ) - vecUnit->at( i ).data.armor ) * coeffDamageType( data.damageType, vecUnit->at( i ).data.size );
+              hits[ i ] = std::max( hit, 0.5 );     
+            }
+            else if( dist > data.splashRadius.ray2 && dist <= data.splashRadius.ray3 )
+            {
+              hit = ( ( data.damage * 0.25 ) - vecUnit->at( i ).data.armor ) * coeffDamageType( data.damageType, vecUnit->at( i ).data.size );
+              hits[ i ] = std::max( hit, 0.5 );     
+            }
+          }
+        }
+      }
+    }
+ 
+    return hits;
+  }
+
 
 
   double Unit::doDamage( vector<UnitEnemy> &vecUnit )
