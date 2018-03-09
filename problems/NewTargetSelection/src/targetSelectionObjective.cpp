@@ -43,15 +43,17 @@ using namespace ghost;
 /* TargetSelectionObjective */
 /****************************/
 
-TargetSelectionObjective::TargetSelectionObjective( const string &name ) : Objective<Variable>( name ) { }
+TargetSelectionObjective::TargetSelectionObjective( string &name, vector<Variable> &vecVariables, vector<Unit> &allies, vector<UnitEnemy> &enemies ) 
+													: Objective<Variable>(name), vecVariables(vecVariables), allies(allies), enemies(enemies)  { } const
 
 /*************/
 /* MaxDamage */
 /*************/
 
-MaxDamage::MaxDamage() : TargetSelectionObjective("MaxDamage") {}
+MaxDamage::MaxDamage(vector<Variable> &vecVariables, vector<Unit> &allies, vector<UnitEnemy> &enemies) 
+					: TargetSelectionObjective("MaxDamage"), vecVariables(vecVariables), allies(allies), enemies(enemies) {}
 
-double MaxDamage::required_cost( vector<Variable> *variables, vector<Unit> allies, vecotr<UnitEnemy enemies>) {
+double MaxDamage::required_cost() {
 	double damages =0;
 	vector<double> hits;
 
@@ -71,18 +73,19 @@ double MaxDamage::required_cost( vector<Variable> *variables, vector<Unit> allie
 /* MaxKill */
 /***********/
 
-MaxKill::MaxKill() : TargetSelectionObjective("MaxKill") {}
+MaxKill::MaxKill(vector<Variable> &vecVariables, vector<Unit> &allies, vector<UnitEnemy> &enemies) 
+				: TargetSelectionObjective("MaxKill"), vecVariables(vecVariables), allies(allies), enemies(enemies) {}
 
-double MaxKill::required_cost( vector<Variable> *variables, vector<Unit> allies, vecotr<UnitEnemy enemies>) {
+double MaxKill::required_cost() {
 	vector<double> hits;
 	vector<UnitEnemy> copyEnemies(*enemies);
 
 	for(int i = 0; i < variables->size(); ++i){
 		currVar = variables->at(i);
-		currUnit = allies.at(i);
+		currUnit = allies->at(i);
 		if(currVar.getValue() != -1) {
-			hits = currUnit.computeDamage(currVar.getValue() ,enemies);
-			for( int i = 0; i < allies.size(); ++i )
+			hits = currUnit.computeDamage(currVar.getValue(), enemies);
+			for( int i = 0; i < allies->size(); ++i )
 				copyEnemies[i].data.hp -= hits[i];
 		}
 	}

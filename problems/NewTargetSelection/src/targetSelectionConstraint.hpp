@@ -31,41 +31,29 @@
 #pragma once
 
 #include <vector>
-#include <map>
+#include <iostream>
 #include <memory>
+#include <algorithm>
+#include <string>
+#include <ghost/objective.hpp>
+#include <ghost/constraint.hpp>
 
-#include "../../src/objective.hpp"
 #include "unit.hpp"
 #include "unitMap.hpp"
-#include "targetSelectionDomain.hpp"
 
 using namespace std;
 using namespace ghost;
 
-class TargetSelectionObjective : public Objective<Variable> {
-	public:
-		TargetSelectionObjective(const string &name);
+class TargetSelectionConstraint : public Constraint<Variable> {
 
-	protected:
-		//int expert_heuristic_variable(const vector<Variable>);
-		//double expert_postprocess_satisfaction( vector<Variable> *vecUnits, 
-		//double &bestCost, vector<Variable> &bestSolution, double sat_timeout) const; 
-};
+	double required_cost() override;
 
-/*************/
-/* MaxDamage */
-/*************/
-class MaxDamage : public TargetSelectionObjective {
-	public:
-		MaxDamage();
-		double required_cost(vector<Variable> *vecVariables) const;
-};
+	private:
+		Unit *currUnit;
+		vector<UnitEnemy> *enemies;
 
-/*************/
-/* MaxKill */
-/*************/
-class MaxKill : public TargetSelectionObjective {
+
 	public:
-		MaxKill();
-		double required_cost(vector<Variable> *vecVariables) const;
+		TargetSelectionConstraint(const Variable &variable, const Unit &currUnit, const vector<UnitEnemy> &enemies) const ;
+
 }

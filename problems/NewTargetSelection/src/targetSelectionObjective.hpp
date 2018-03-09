@@ -31,30 +31,41 @@
 #pragma once
 
 #include <vector>
-#include <iostream>
+#include <map>
 #include <memory>
-#include <algorithm>
-#include <string>
-#include <ghost/objective.hpp>
-#include <ghost/constraint.hpp>
 
+#include "../../src/objective.hpp"
 #include "unit.hpp"
-#include "targetSelectionDomain.hpp"
 #include "unitMap.hpp"
+#include "targetSelectionDomain.hpp"
 
 using namespace std;
 using namespace ghost;
 
-class TargetSelectionConstraint : public Constraint<Variable> {
-
-	double required_cost(Variable &currentUnit, const vector<int> &newTarget,
-						 shared_ptr< Objective<Variable>> objective) const override;
+class TargetSelectionObjective : public Objective<Variable> {
+	public:
+		TargetSelectionObjective(string &name, vector<Variable> &vecVariables, vector<Unit> &allies, vector<UnitEnemy> &enemies) const;
 
 	private:
-		vector<Unit> allies;
+		vector<Variable> *vecVariables; 
+		vector<Unit> *allies; 
+		vector<UnitEnemy> *enemies;
+};
 
-
+/*************/
+/* MaxDamage */
+/*************/
+class MaxDamage : public TargetSelectionObjective {
 	public:
-		TargetSelectionConstraint(const std::vector<Variable>*);
+		MaxDamage();
+		double required_cost() const;
+};
 
+/*************/
+/* MaxKill */
+/*************/
+class MaxKill : public TargetSelectionObjective {
+	public:
+		MaxKill();
+		double required_cost() const;
 }

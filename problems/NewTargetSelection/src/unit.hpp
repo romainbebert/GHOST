@@ -32,8 +32,8 @@
 
 #include <vector>
 #include <cmath>
+#include <ghost/variable.hpp>
 
-#include "../../src/variable.hpp"
 #include "races.hpp"
 #include "sizes.hpp"
 #include "damageTypes.hpp"
@@ -128,7 +128,7 @@ namespace ghost
   /************/
   /*** Unit ***/
   /************/  
-  class Unit : public Variable
+  class Unit
   {
   public:
     Unit();
@@ -210,10 +210,10 @@ namespace ghost
     inline bool isLinearSplash()	const { return data.doLinearSplash; }
     
     double doDamage( vector<UnitEnemy> &vecEnemy );
+    //vector<double> computeDamage( vector<UnitEnemy> *vecEnemy ) const;
     vector<double> computeDamage( vector<UnitEnemy> *vecEnemy ) const;
-    vector<double> computeDamage( int val, vector<UnitEnemy> *vecEnemy ) const;
-    vector<UnitEnemy> getLivingEnemiesInRange(vector<UnitEnemy> enemies) const;
-    vector<UnitEnemy> getLivingEnemiesInRange(vector<UnitEnemy> enemies) const;
+    vector<UnitEnemy> getLivingEnemiesInRange(vector<UnitEnemy> *enemies) const;
+    vector<UnitEnemy> getLivingEnemiesInRange(vector<UnitEnemy> *enemies) const;
 
     inline void	swapValue( Unit &other )	{ std::swap( value, other.value ); }
 
@@ -226,5 +226,6 @@ namespace ghost
 
     UnitData	data;
     Coord	coord;
+    int value;
   };
 }
