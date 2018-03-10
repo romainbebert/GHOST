@@ -1,30 +1,34 @@
+EXEC=target
+
+#CXX=clang++
+CXX=g++
+
 # Directories
 SRCDIR=src
-IDIR=include
 OBJDIR=obj
 BINDIR=bin
 
+
 # Compiler flags
-IDIRFLAGS=$(foreach idir, $(IDIR), -I$(idir))
-CXXFIRSTFLAGS= -O2 -DNDEBUG -W -Wall -Wextra -pedantic -Wno-sign-compare -Wno-unused-parameter $(IDIRFLAGS)
-
-# Compiler
-ifneq (,$(findstring g++,$(CXX)))
-	CXXFLAGS= -std=c++14 $(CXXFIRSTFLAGS)
-else
-	CXXFLAGS= -std=c++1y -stdlib=libc++ $(CXXFIRSTFLAGS)
-endif
-
+CXXFIRSTFLAGS= -Ofast -DNDEBUG -W -Wall -Wextra -pedantic -Wno-sign-compare -Wno-unused-parameter
+CXXFIRSTFLAGSDEBUG= -g -O0 -W -Wall -Wextra -pedantic -Wno-sign-compare -Wno-unused-parameter 
 
 # Linker flags
-LDFLAGS=-Llib -pthread -lghost
+LDFLAGS=-pthread -lghost
+
+# Compiler
+ifneq (,$(findstring clang,$(CXX)))
+	CXXFLAGS= -std=c++1y  -stdlib=libc++ $(CXXFIRSTFLAGS)
+	CXXFLAGSDEBUG= -std=c++1y  -stdlib=libc++ $(CXXFIRSTFLAGSDEBUG)
+	LDFLAGS=-pthread -lghost -lc++ -lc++abi
+else
+	CXXFLAGS= -std=c++14 $(CXXFIRSTFLAGS)
+	CXXFLAGSDEBUG= -std=c++14 $(CXXFIRSTFLAGSDEBUG)
+endif
 
 # Files
 SOURCES=$(foreach sdir, $(SRCDIR), $(wildcard $(sdir)/*.cpp))
 OBJECTS=$(patsubst %.cpp, $(OBJDIR)/%.o, $(notdir $(SOURCES)))
-
-# Binaries name
-EXECS=$(patsubst %.cpp, $(BINDIR)/%, $(notdir $(SOURCES)))
 
 # For rm
 SOURCESTILDE=$(foreach sdir, $(SRCDIR), $(wildcard $(sdir)/*.cpp~))
@@ -37,9 +41,12 @@ vpath %.cpp $(SRCDIR)
 # $< is the first item in the dependencies list
 
 # Rules
-all: $(EXECS)
+all: $(BINDIR)/$(EXEC)
 
-$(BINDIR)/targSelec: $(OBJDIR)/targSelec.o
+debug: CXXFLAGS= $(CXXFLAGSDEBUG)
+debug: $(BINDIR)/$(EXEC)
+
+$(BINDIR)/$(EXEC): $(OBJECTS)
 	$(CXX) -o $@ $^ $(LDFLAGS)
 
 $(OBJDIR)/%.o: %.cpp
@@ -48,4 +55,4 @@ $(OBJDIR)/%.o: %.cpp
 .PHONY: clean 
 
 clean:
-	rm -fr core *~ $(EXECS) $(OBJECTS) $(SOURCESTILDE)
+	rm -fr core *~ $(EXEC) $(OBJECTS) $(SOURCESTILDE)

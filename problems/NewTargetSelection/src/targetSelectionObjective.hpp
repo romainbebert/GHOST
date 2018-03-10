@@ -33,20 +33,19 @@
 #include <vector>
 #include <map>
 #include <memory>
+#include <ghost/objective.hpp>
 
-#include "../../src/objective.hpp"
 #include "unit.hpp"
 #include "unitMap.hpp"
-#include "targetSelectionDomain.hpp"
 
 using namespace std;
 using namespace ghost;
 
 class TargetSelectionObjective : public Objective<Variable> {
 	public:
-		TargetSelectionObjective(string &name, vector<Variable> &vecVariables, vector<Unit> &allies, vector<UnitEnemy> &enemies) const;
+		TargetSelectionObjective( string &name, vector<Variable> &vecVariables, vector<Unit> &allies, vector<UnitEnemy> &enemies);
 
-	private:
+	protected:
 		vector<Variable> *vecVariables; 
 		vector<Unit> *allies; 
 		vector<UnitEnemy> *enemies;
@@ -57,7 +56,7 @@ class TargetSelectionObjective : public Objective<Variable> {
 /*************/
 class MaxDamage : public TargetSelectionObjective {
 	public:
-		MaxDamage();
+		MaxDamage( vector<Variable> &vecVariables,  vector<Unit> &allies,  vector<UnitEnemy> &enemies);
 		double required_cost() const;
 };
 
@@ -66,6 +65,6 @@ class MaxDamage : public TargetSelectionObjective {
 /*************/
 class MaxKill : public TargetSelectionObjective {
 	public:
-		MaxKill();
+		MaxKill( vector<Variable> &vecVariables,  vector<Unit> &allies,  vector<UnitEnemy> &enemies);
 		double required_cost() const;
-}
+};

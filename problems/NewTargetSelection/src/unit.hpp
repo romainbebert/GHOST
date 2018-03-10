@@ -213,11 +213,10 @@ namespace ghost
     //vector<double> computeDamage( vector<UnitEnemy> *vecEnemy ) const;
     vector<double> computeDamage( vector<UnitEnemy> *vecEnemy ) const;
     vector<UnitEnemy> getLivingEnemiesInRange(vector<UnitEnemy> *enemies) const;
-    vector<UnitEnemy> getLivingEnemiesInRange(vector<UnitEnemy> *enemies) const;
 
     inline void	swapValue( Unit &other )	{ std::swap( value, other.value ); }
 
-    inline bool operator==( const Unit & other ) { return id == other.id; }
+    //inline bool operator==( const Unit & other ) { return id == other.id; }
     
     friend ostream& operator<<( ostream&, const Unit& );
 
