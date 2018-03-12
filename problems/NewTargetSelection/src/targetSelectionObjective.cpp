@@ -43,22 +43,22 @@ using namespace ghost;
 /* TargetSelectionObjective */
 /****************************/
 
-TargetSelectionObjective::TargetSelectionObjective(  string name,  vector<Variable> vecVariables,  vector<Unit> allies,  vector<UnitEnemy> enemies ) 
-													: Objective<Variable>(name), vecVariables(vecVariables), allies(allies), enemies(enemies)  { }
+TargetSelectionObjective::TargetSelectionObjective(  string name,  vector<Unit> allies,  vector<UnitEnemy> enemies ) 
+													: Objective<Variable>(name), allies(allies), enemies(enemies)  { }
 
 /*************/
 /* MaxDamage */
 /*************/
 
-MaxDamage::MaxDamage( vector<Variable> vecVariables,  vector<Unit> allies,  vector<UnitEnemy> enemies) 
-					: TargetSelectionObjective("MaxDamage", vecVariables, allies, enemies) {}
+MaxDamage::MaxDamage( vector<Unit> allies,  vector<UnitEnemy> enemies) 
+					: TargetSelectionObjective("MaxDamage", allies, enemies) {}
 
-double MaxDamage::required_cost() {
+double MaxDamage::required_cost(vector<Variable> *vecVariables) {
 	double damages =0;
 	vector<double> hits;
 
-	for(int i = 0; i < vecVariables.size(); ++i){
-		Variable currVar = vecVariables.at(i);
+	for(int i = 0; i < vecVariables->size(); ++i){
+		Variable currVar = vecVariables->at(i);
 		if(currVar.get_value() != -1) {
 			Unit currUnit = allies.at(i);
 			hits = currUnit.computeDamage(&enemies);
@@ -73,15 +73,15 @@ double MaxDamage::required_cost() {
 /* MaxKill */
 /***********/
 
-MaxKill::MaxKill( vector<Variable> vecVariables,  vector<Unit> allies,  vector<UnitEnemy> enemies) 
-				: TargetSelectionObjective("MaxKill", vecVariables, allies, enemies) {}
+MaxKill::MaxKill( vector<Unit> allies,  vector<UnitEnemy> enemies) 
+				: TargetSelectionObjective("MaxKill", allies, enemies) {}
 
-double MaxKill::required_cost() {
+double MaxKill::required_cost(vector<Variable> *vecVariables) {
 	vector<double> hits;
 	vector<UnitEnemy> copyEnemies(enemies);
 
-	for(int i = 0; i < vecVariables.size(); ++i){
-		Variable currVar = vecVariables.at(i);
+	for(int i = 0; i < vecVariables->size(); ++i){
+		Variable currVar = vecVariables->at(i);
 		Unit currUnit = allies.at(i);
 		if(currVar.get_value() != -1) {
 			hits = currUnit.computeDamage(&enemies);
