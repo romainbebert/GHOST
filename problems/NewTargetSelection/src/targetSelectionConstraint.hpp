@@ -46,14 +46,14 @@ using namespace ghost;
 
 class TargetSelectionConstraint : public Constraint<Variable> {
 
-	double required_cost() override;
+	double required_cost();
 
 	private:
-		Unit *currUnit;
-		vector<UnitEnemy> *enemies;
+		Unit currUnit;
+		vector<UnitEnemy> enemies;
 
 
 	public:
-		TargetSelectionConstraint(const Variable &variable, const Unit &currUnit, const vector<UnitEnemy> &enemies) const ;
+		TargetSelectionConstraint( vector<Variable> variable,  Unit currUnit,  vector<UnitEnemy> enemies) ;
 
-}
+};

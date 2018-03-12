@@ -40,25 +40,24 @@ using namespace std;
 using namespace ghost;
 
 
-targetSelectionConstraint::targetSelectionConstraint(const Variable *variable, Unit currUnit, vector<UnitEnemy> enemies) 
-	: Constraint<Variable>(variable), currUnit(currUnit), enemies(enemies) {}
+TargetSelectionConstraint::TargetSelectionConstraint( vector<Variable> variable, Unit currUnit, vector<UnitEnemy> enemies) 
+	: Constraint<Variable>(&variable), currUnit(currUnit), enemies(enemies) {}
 
-double targetSelectionConstraint::required_cost() 
+double TargetSelectionConstraint::required_cost() 
 {
 	double conflicts = 0.;
 	// A unit u is badly assigned to a target t iif:
     // 1. u can shoot
     // 2. u has at least one living reachable target in its range
     // 3. t is the dummy target (-1) or t in unreachable from u or t is dead
-	if( currUnit.canShoot() && !currUnit.getLivingEnemiesInRange(enemies).empty() 
-		&& ( variable.getValue() == -1 || !enemies.get(variable.getValue()).isInRangeAndAlive(currUnit) ) ) 
+	if( currUnit.canShoot() && !currUnit.getLivingEnemiesInRange(&enemies).empty() 
+		&& ( variables->at(0).get_value() == -1 || !enemies.at(variables->at(0).get_value()).isInRangeAndAlive(currUnit) ) ) 
 	{
 		++conflicts;
 	}
 	//If no enemies in range and variable isn't set to -1
-	if( currUnit.getEnemiesInRange(enemies).empty() && variable.getValue() != -1 ) 
+	if( currUnit.getLivingEnemiesInRange(&enemies).empty() && variables->at(0).get_value() != -1 ) 
 		++conflicts;
-	}
 
 	return conflicts;
 }

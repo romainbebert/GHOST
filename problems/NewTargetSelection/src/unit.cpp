@@ -167,7 +167,7 @@ namespace ghost
     return distanceFrom(u) >= data.range.min && distanceFrom(u) <= data.range.max;
   }
   
-  bool UnitEnemy::isInRangeAndAlive( const Unit &u ) const
+  bool UnitEnemy::isInRangeAndAlive( const Unit& u ) const
   {
     return !u.isDead() && isInRange( u );
   }
@@ -255,29 +255,33 @@ namespace ghost
 
   Unit::Unit(UnitData data,
 	     Coord coord,
-	     int value)
-    : value(value),
-      data(data),
-      coord(coord)
+	     int value, int id)
+    : data(data),
+      coord(coord),
+      value(value),
+      id(id)
   {
     if( value == -1)
       value = id;
   }
   
-  Unit::Unit(UnitData data,
+  Unit::Unit( UnitData data,
 	     int x,
 	     int y,
-	     int value)
-    : value(value),
-      data(data),
-      coord{x, y}
+	     int value,
+       int id)
+    : data(data),
+      coord{x, y},
+      value(value),
+      id(id)
   {
     if( value == -1)
       value = id;
   }
 
   Unit::Unit( const Unit &other )
-    : value(other.value),
+    : id(other.id),
+      value(other.value),
       data(other.data),
       coord(other.coord)
   { }
@@ -285,8 +289,8 @@ namespace ghost
   vector<UnitEnemy> Unit::getEnemiesInRange( vector<UnitEnemy> enemies) const {
     vector<UnitEnemy> inRange;
 
-    for(const auto &e : *enemies)
-      if( this.isInRange(e) )
+    for(const auto &e : enemies)
+      if( this->isInRange(e) )
         inRange.push_back(e);
 
       return inRange;
@@ -295,8 +299,8 @@ namespace ghost
   vector<UnitEnemy> Unit::getLivingEnemiesInRange( vector<UnitEnemy> enemies) const {
     vector<UnitEnemy> inRange;
 
-    for(const auto &e : *enemies)
-      if( e.isInRangeAndAlive(this) )
+    for(const auto &e : enemies)
+      if( e.isInRangeAndAlive(*this) )
         inRange.push_back(e);
 
       return inRange;
@@ -436,8 +440,6 @@ namespace ghost
 
   void Unit::swap( Unit &other )
   {
-    std::swap(this->name, other.name);
-    std::swap(this->fullName, other.fullName);
     std::swap(this->id, other.id);
     std::swap(this->value, other.value);
     std::swap(this->data, other.data);
@@ -448,7 +450,7 @@ namespace ghost
   {
     os
       << "Type info: " <<  typeid(u).name() << endl
-      << "Full name: " << u.fullName << endl
+      << "Full name: " << u.getFullName() << endl
       << "Coord: (" << u.coord.x << ", " << u.coord.y << ")" << endl 
       << "Id num: " << u.id << endl
       << "Value: " <<  u.value << endl

@@ -132,8 +132,8 @@ namespace ghost
   {
   public:
     Unit();
-    Unit( UnitData, Coord, int = -1 );
-    Unit( UnitData, int, int, int = -1 );
+    Unit( UnitData, Coord, int = -1, int = 0 );
+    Unit( UnitData, int, int, int = -1, int = 0);
     Unit( const Unit& );
     Unit& operator=( Unit );
 
@@ -198,6 +198,9 @@ namespace ghost
       }
     }
     
+    inline int getId() const { return id; }
+    inline string getName() const { return data.name; }
+    inline string getFullName() const { return data.name; }
     inline Range getRange()		const { return data.range; }
     inline double getRangeMin()		const { return data.range.min; }
     inline double getRangeMax()		const { return data.range.max; }
@@ -212,7 +215,8 @@ namespace ghost
     double doDamage( vector<UnitEnemy> &vecEnemy );
     //vector<double> computeDamage( vector<UnitEnemy> *vecEnemy ) const;
     vector<double> computeDamage( vector<UnitEnemy> *vecEnemy ) const;
-    vector<UnitEnemy> getLivingEnemiesInRange(vector<UnitEnemy> *enemies) const;
+    vector<UnitEnemy> getEnemiesInRange(vector<UnitEnemy> enemies) const;
+    vector<UnitEnemy> getLivingEnemiesInRange(vector<UnitEnemy> enemies) const;
 
     inline void	swapValue( Unit &other )	{ std::swap( value, other.value ); }
 
@@ -223,6 +227,7 @@ namespace ghost
   private:
     void swap( Unit& );
 
+    int id;
     UnitData	data;
     Coord	coord;
     int value;
