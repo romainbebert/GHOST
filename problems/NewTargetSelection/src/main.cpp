@@ -1,12 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
-#include <memory>
-#include <algorithm>
-#include <type_traits>
 #include <string>
-#include <limits>
-#include <numeric>
 
 #include "unit.hpp"
 #include "targetSelectionConstraint.hpp"
@@ -27,8 +22,10 @@ int main(int argc, char **argv) {
 	if( argc > 2 )
 		opt = stoi(argv[2]);
 
-	vector<int> domain(13);
+	vector<int> domain(15);
 	iota(domain.begin(),domain.end(), -1);
+	for (int i = 0; i < 15; ++i)
+		cout << domain[i] << endl;
 	vector<Variable> variables {
 		Variable("Terran_Marine","Terran_Marine",domain),
 		Variable("Terran_Marine","Terran_Marine",domain),
@@ -68,14 +65,13 @@ int main(int argc, char **argv) {
   for( int i = 0 ; i < units.size() ; ++i )
     enemies.emplace_back( UnitEnemy( units.at(i).getData(), { units.at(i).getX(), -units.at(i).getY() } ) );
 
-	vector<TargetSelectionConstraint> constraints(12);
+	vector<TargetSelectionConstraint> constraints;
 	for(int i = 0; i < 12; ++i) {
-		vector<Variable> v(1); //Because of the implementation of Constraint, we need to make a vector
-		v.push_back(variables[i]);
-		constraints.push_back(TargetSelectionConstraint(v, units[i], enemies));
+		//TargetSelectionConstraint constraint(v, units[i], enemies);
+		constraints.push_back({variables, units[i], enemies});
 	}
 	
-	MaxDamage mdobj(variables, units, enemies);
+	MaxDamage mdobj(units, enemies);
 
 	Solver<Variable, TargetSelectionConstraint> solver(variables, constraints,make_shared<MaxDamage>(mdobj));
 
@@ -91,3 +87,4 @@ int main(int argc, char **argv) {
 
     return 0;
 }
+

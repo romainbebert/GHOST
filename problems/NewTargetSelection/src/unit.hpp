@@ -213,8 +213,7 @@ namespace ghost
     inline bool isLinearSplash()	const { return data.doLinearSplash; }
     
     double doDamage( vector<UnitEnemy> &vecEnemy );
-    //vector<double> computeDamage( vector<UnitEnemy> *vecEnemy ) const;
-    vector<double> computeDamage( vector<UnitEnemy> *vecEnemy ) const;
+    vector<double> computeDamage( vector<UnitEnemy> vecEnemy ) const;
     vector<UnitEnemy> getEnemiesInRange(vector<UnitEnemy> enemies) const;
     vector<UnitEnemy> getLivingEnemiesInRange(vector<UnitEnemy> enemies) const;
 

@@ -46,7 +46,7 @@ using namespace ghost;
 
 class TargetSelectionConstraint : public Constraint<Variable> {
 
-	double required_cost();
+	double required_cost() const;
 
 	private:
 		Unit currUnit;

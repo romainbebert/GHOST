@@ -46,7 +46,6 @@ class TargetSelectionObjective : public Objective<Variable> {
 		TargetSelectionObjective( string name, vector<Unit> allies, vector<UnitEnemy> enemies);
 
 	protected:
-		double required_cost(vector<Variable> *vecVariables);
 		vector<Unit> allies; 
 		vector<UnitEnemy> enemies;
 };
@@ -55,7 +54,7 @@ class TargetSelectionObjective : public Objective<Variable> {
 /* MaxDamage */
 /*************/
 class MaxDamage : public TargetSelectionObjective {
-	double required_cost(vector<Variable> *vecVariables);
+	double required_cost(vector<Variable> *vecVariables) const;
 
 	public:
 		MaxDamage( vector<Unit> allies,  vector<UnitEnemy> enemies);
@@ -65,7 +64,7 @@ class MaxDamage : public TargetSelectionObjective {
 /* MaxKill */
 /*************/
 class MaxKill : public TargetSelectionObjective {
-	double required_cost(vector<Variable> *vecVariables);
+	double required_cost(vector<Variable> *vecVariables) const;
 
 	public:
 		MaxKill( vector<Unit> allies,  vector<UnitEnemy> enemies);

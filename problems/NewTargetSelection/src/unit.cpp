@@ -306,13 +306,13 @@ namespace ghost
       return inRange;
   }
 
-  vector<double> Unit::computeDamage( vector<UnitEnemy> *vecUnit ) const
+  vector<double> Unit::computeDamage( vector<UnitEnemy> vecUnit ) const
   {
-    vector<double> hits( vecUnit->size(), 0. );
+    vector<double> hits( vecUnit.size(), 0. );
 
-    if( distanceFrom( vecUnit->at( value ) ) >= getRangeMin() && distanceFrom( vecUnit->at( value ) ) <= getRangeMax() )
+    if( distanceFrom( vecUnit.at( value ) ) >= getRangeMin() && distanceFrom( vecUnit.at( value ) ) <= getRangeMax() )
     {
-      UnitEnemy *u = &vecUnit->at( value );
+      UnitEnemy *u = &vecUnit.at( value );
       double hit;    
 
       if( !isSplash() )
@@ -322,29 +322,29 @@ namespace ghost
       }
       else
       {
-	for( int i = 0 ; i < vecUnit->size() ; ++i )
+	for( int i = 0 ; i < vecUnit.size() ; ++i )
 	{
 	  if( i == value )
 	  {
 	    hit = ( data.damage - u->data.armor ) * coeffDamageType( data.damageType, u->data.size );
 	    hits[value] = std::max( hit, 0.5 );	    
 	  }
-	  else if( !vecUnit->at( i ).isDead() )
+	  else if( !vecUnit.at( i ).isDead() )
 	  {
-	    double dist = u->distanceFrom( vecUnit->at( i ) );
+	    double dist = u->distanceFrom( vecUnit.at( i ) );
 	    if( dist <= data.splashRadius.ray1 )
 	    {
-	      hit = ( data.damage - vecUnit->at( i ).data.armor ) * coeffDamageType( data.damageType, vecUnit->at( i ).data.size );
+	      hit = ( data.damage - vecUnit.at( i ).data.armor ) * coeffDamageType( data.damageType, vecUnit.at( i ).data.size );
 	      hits[ i ] = std::max( hit, 0.5 );	    
 	    }
 	    else if( dist > data.splashRadius.ray1 && dist <= data.splashRadius.ray2 )
 	    {
-	      hit = ( ( data.damage * 0.5 ) - vecUnit->at( i ).data.armor ) * coeffDamageType( data.damageType, vecUnit->at( i ).data.size );
+	      hit = ( ( data.damage * 0.5 ) - vecUnit.at( i ).data.armor ) * coeffDamageType( data.damageType, vecUnit.at( i ).data.size );
 	      hits[ i ] = std::max( hit, 0.5 );	    
 	    }
 	    else if( dist > data.splashRadius.ray2 && dist <= data.splashRadius.ray3 )
 	    {
-	      hit = ( ( data.damage * 0.25 ) - vecUnit->at( i ).data.armor ) * coeffDamageType( data.damageType, vecUnit->at( i ).data.size );
+	      hit = ( ( data.damage * 0.25 ) - vecUnit.at( i ).data.armor ) * coeffDamageType( data.damageType, vecUnit.at( i ).data.size );
 	      hits[ i ] = std::max( hit, 0.5 );	    
 	    }
 	  }

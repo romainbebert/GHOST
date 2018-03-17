@@ -53,15 +53,16 @@ TargetSelectionObjective::TargetSelectionObjective(  string name,  vector<Unit> 
 MaxDamage::MaxDamage( vector<Unit> allies,  vector<UnitEnemy> enemies) 
 					: TargetSelectionObjective("MaxDamage", allies, enemies) {}
 
-double MaxDamage::required_cost(vector<Variable> *vecVariables) {
+double MaxDamage::required_cost(vector<Variable> *vecVariables) const {
 	double damages =0;
 	vector<double> hits;
+    cout << "MaxDamage cost" << endl;
 
 	for(int i = 0; i < vecVariables->size(); ++i){
 		Variable currVar = vecVariables->at(i);
 		if(currVar.get_value() != -1) {
 			Unit currUnit = allies.at(i);
-			hits = currUnit.computeDamage(&enemies);
+			hits = currUnit.computeDamage(enemies);
 			for_each( begin(hits), end(hits), [&](double d){ damages +=d; });
 		}
 	}
@@ -76,15 +77,16 @@ double MaxDamage::required_cost(vector<Variable> *vecVariables) {
 MaxKill::MaxKill( vector<Unit> allies,  vector<UnitEnemy> enemies) 
 				: TargetSelectionObjective("MaxKill", allies, enemies) {}
 
-double MaxKill::required_cost(vector<Variable> *vecVariables) {
+double MaxKill::required_cost(vector<Variable> *vecVariables) const {
 	vector<double> hits;
 	vector<UnitEnemy> copyEnemies(enemies);
+    cout << "Maxkill cost" << endl;
 
 	for(int i = 0; i < vecVariables->size(); ++i){
 		Variable currVar = vecVariables->at(i);
 		Unit currUnit = allies.at(i);
 		if(currVar.get_value() != -1) {
-			hits = currUnit.computeDamage(&enemies);
+			hits = currUnit.computeDamage(enemies);
 			for( int i = 0; i < allies.size(); ++i )
 				copyEnemies[i].data.hp -= hits[i];
 		}
