@@ -45,6 +45,9 @@ class QAPConstraint : public Constraint<Variable> {
 	double required_cost() const override;
 
 	public:
-		QAPConstraint( vector<Variable> *variable) ;
+		QAPConstraint( vector<Variable> *variable, int size ) ;
+
+	private:
+		int size;
 
 };

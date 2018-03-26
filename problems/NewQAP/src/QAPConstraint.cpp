@@ -40,10 +40,20 @@ using namespace std;
 using namespace ghost;
 
 
-QAPConstraint::QAPConstraint( vector<Variable> *variables) 
-	: Constraint<Variable>(variables) {}
+QAPConstraint::QAPConstraint( vector<Variable> *variables, int size) 
+	: Constraint<Variable>(variables), size(size) {}
 
 double QAPConstraint::required_cost() const
 {
-	return 0.;
+	vector<int> varValues;
+	vector<int> domain(size);
+	iota(domain.begin(),domain.end(), 0);
+
+	for (int i = 0; i < size; ++i) 
+		varValues.push_back(variables->at(i).get_value());
+
+	if( is_permutation(domain.begin(), domain.end(), varValues.begin()))
+		return 0.;
+
+	return 1.;
 }
