@@ -24,23 +24,21 @@ int main(int argc, char **argv) {
 
 	vector<int> domain(15);
 	iota(domain.begin(),domain.end(), -1);
-	for (int i = 0; i < 15; ++i)
-		cout << domain[i] << endl;
 	vector<Variable> variables {
-		Variable("Terran_Marine","Terran_Marine",domain),
-		Variable("Terran_Marine","Terran_Marine",domain),
-		Variable("Terran_Marine","Terran_Marine",domain),
-		Variable("Terran_Marine","Terran_Marine",domain),
-		Variable("Terran_Marine","Terran_Marine",domain),
-		Variable("Terran_Goliath","Terran_Goliath",domain),
-		Variable("Terran_Vulture","Terran_Vulture",domain),
-		Variable("Terran_Vulture","Terran_Vulture",domain),
-		Variable("Terran_Goliath","Terran_Goliath",domain),
-		Variable("Terran_Siege_Tank_Tank_Mode","Terran_Siege_Tank_Tank_Mode",domain),
-		Variable("Terran_Gost","Terran_Gost",domain),
-		Variable("Terran_Gost","Terran_Gost",domain),
-		Variable("Terran_Siege_Tank_Tank_Mode","Terran_Siege_Tank_Tank_Mode",domain),
-		Variable("Terran_Siege_Tank_Siege_Mode","Terran_Siege_Tank_Siege_Mode",domain)
+		Variable("Terran_Marine","Terran_Marine",domain,-1),
+		Variable("Terran_Marine","Terran_Marine",domain,-1),
+		Variable("Terran_Marine","Terran_Marine",domain,-1),
+		Variable("Terran_Marine","Terran_Marine",domain,-1),
+		Variable("Terran_Marine","Terran_Marine",domain,-1),
+		Variable("Terran_Goliath","Terran_Goliath",domain,-1),
+		Variable("Terran_Vulture","Terran_Vulture",domain,-1),
+		Variable("Terran_Vulture","Terran_Vulture",domain,-1),
+		Variable("Terran_Goliath","Terran_Goliath",domain,-1),
+		Variable("Terran_Siege_Tank_Tank_Mode","Terran_Siege_Tank_Tank_Mode",domain,-1),
+		Variable("Terran_Gost","Terran_Gost",domain,-1),
+		Variable("Terran_Gost","Terran_Gost",domain,-1),
+		Variable("Terran_Siege_Tank_Tank_Mode","Terran_Siege_Tank_Tank_Mode",domain,-1),
+		Variable("Terran_Siege_Tank_Siege_Mode","Terran_Siege_Tank_Siege_Mode",domain,-1)
 	};
 
 	// Define Units
