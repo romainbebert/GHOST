@@ -49,5 +49,6 @@ class QAPConstraint : public Constraint<Variable> {
 
 	private:
 		int size;
+		vector<int> domain;
 
 };

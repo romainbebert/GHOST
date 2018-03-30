@@ -16,7 +16,9 @@ using namespace ghost;
 		for( int i = 0 ; i < size ; ++i )
 		  for( int j = i + 1 ; j < size ; ++j )
 		    sum += ( dist_matrix[ variables->at(i).get_value() ][ variables->at(j).get_value() ] * flux_matrix[i][j] );
-  
+		#if DEBUG
+  		//cout << "Objective value : " << sum << endl;
+  		#endif
   		return sum;
 	}
 

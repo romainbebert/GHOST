@@ -41,19 +41,38 @@ using namespace ghost;
 
 
 QAPConstraint::QAPConstraint( vector<Variable> *variables, int size) 
-	: Constraint<Variable>(variables), size(size) {}
+	: Constraint<Variable>(variables), size(size) {
+	domain =  vector<int>(size);
+	iota(domain.begin(),domain.end(), 0);
+	#if DEBUG
+	/*for(int i = 0; i < size; ++i ) {
+		cout << "domain : " << domain.at(i) << endl;
+	}*/
+	#endif
+}
 
 double QAPConstraint::required_cost() const
 {
 	vector<int> varValues;
-	vector<int> domain(size);
-	iota(domain.begin(),domain.end(), 0);
+	for (int i = 0; i < size; ++i) {
+		varValues.emplace_back(variables->at(i).get_value());
+		#if DEBUG
+		cout << "varValue : " << varValues.at(i) << endl;
+		#endif
+	}
+			//cout << "test de ses morts : " << is_permutation(domain.begin(), domain.end(), varValues.begin()) << endl;
 
-	for (int i = 0; i < size; ++i) 
-		varValues.push_back(variables->at(i).get_value());
-
-	if( is_permutation(domain.begin(), domain.end(), varValues.begin()))
+	if( is_permutation(domain.begin(), domain.end(), varValues.begin())){
+		//#if DEBUG
+		cout << "isPermutation" << endl;
+		//#endif
 		return 0.;
+	}
+	else {
+		//#if DEBUG
+		//cout << "isNotPermutation" << endl;
+		//#endif
+		return 1.;
+	}
 
-	return 1.;
 }

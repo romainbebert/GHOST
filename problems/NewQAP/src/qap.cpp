@@ -159,21 +159,26 @@ int main( int argc, char* argv[] )
   iota(domain.begin(),domain.end(), 0);
 
   for(int i = 0; i < size; ++i)
-  	variables.push_back({""+i,""+i,domain});
+  	variables.push_back({""+i,""+i,domain, i});
 
   vector<QAPConstraint> constraints;
   constraints.push_back({&variables, size});
 
   QAPObjective objective( "Min Weight", size, matrix_distances, matrix_flows);
-
-  Solver<Variable, QAPConstraint> solver(variables, constraints, make_shared<QAPObjective>(objective));
+  Solver<Variable, QAPConstraint> solver(variables, constraints, make_shared<QAPObjective>(objective), true);
 
   double finalCost;
   vector<int> finalSolution;
 
-  int sat = 20;
-  int opt = 30;
+  int sat = 200;
+  int opt = 300;
 
   solver.solve(finalCost, finalSolution, sat, opt);
+  
+  cout << "final cost = "<< finalCost << " | solution : ";
+  for (int& e : finalSolution)
+    cout << e << " ";
+  cout << endl;
 
+  return 0;
 }
