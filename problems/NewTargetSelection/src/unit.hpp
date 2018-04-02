@@ -132,12 +132,12 @@ namespace ghost
   {
   public:
     Unit();
-    Unit( UnitData, Coord, int = -1, int = 0 );
-    Unit( UnitData, int, int, int = -1, int = 0);
+    Unit( UnitData, Coord, int = 0 );
+    Unit( UnitData, int, int, int = 0);
     Unit( const Unit& );
     Unit& operator=( Unit );
 
-    inline bool	isSelected()		const { return value != -1; }
+    //inline bool	isSelected()		const { return value != -1; }
     inline double takeHit( double point )     { return data.takeHit( point ); }
     inline bool isDead()		const { return data.isDead(); }
     inline bool canShoot()		const { return data.canShoot(); }
@@ -212,12 +212,12 @@ namespace ghost
     inline bool isSplash()		const { return data.doSplash; }
     inline bool isLinearSplash()	const { return data.doLinearSplash; }
     
-    double doDamage( vector<UnitEnemy> &vecEnemy );
-    vector<double> computeDamage( vector<UnitEnemy> vecEnemy ) const;
+    double doDamage( vector<UnitEnemy> &vecEnemy, int value );
+    vector<double> computeDamage( vector<UnitEnemy> vecEnemy, int value ) const;
     vector<UnitEnemy> getEnemiesInRange(vector<UnitEnemy> enemies) const;
     vector<UnitEnemy> getLivingEnemiesInRange(vector<UnitEnemy> enemies) const;
 
-    inline void	swapValue( Unit &other )	{ std::swap( value, other.value ); }
+    //inline void	swapValue( Unit &other )	{ std::swap( value, other.value ); }
 
     //inline bool operator==( const Unit & other ) { return id == other.id; }
     
@@ -229,6 +229,5 @@ namespace ghost
     int id;
     UnitData	data;
     Coord	coord;
-    int value;
   };
 }

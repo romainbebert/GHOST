@@ -255,33 +255,23 @@ namespace ghost
 
   Unit::Unit(UnitData data,
 	     Coord coord,
-	     int value, int id)
+	     int id)
     : data(data),
       coord(coord),
-      value(value),
       id(id)
-  {
-    if( value == -1)
-      value = id;
-  }
+  { }
   
   Unit::Unit( UnitData data,
 	     int x,
 	     int y,
-	     int value,
        int id)
     : data(data),
       coord{x, y},
-      value(value),
       id(id)
-  {
-    if( value == -1)
-      value = id;
-  }
+  { }
 
   Unit::Unit( const Unit &other )
     : id(other.id),
-      value(other.value),
       data(other.data),
       coord(other.coord)
   { }
@@ -306,10 +296,10 @@ namespace ghost
       return inRange;
   }
 
-  vector<double> Unit::computeDamage( vector<UnitEnemy> vecUnit ) const
+  vector<double> Unit::computeDamage( vector<UnitEnemy> vecUnit, int value ) const
   {
     vector<double> hits( vecUnit.size(), 0. );
-    cout << "test : " << endl;
+    cout << "test : " << value << endl;
 
     if( distanceFrom( vecUnit.at( value ) ) >= getRangeMin() && distanceFrom( vecUnit.at( value ) ) <= getRangeMax() )
     {
@@ -357,7 +347,7 @@ namespace ghost
   }
 
 
-  double Unit::doDamage( vector<UnitEnemy> &vecUnit )
+  double Unit::doDamage( vector<UnitEnemy> &vecUnit, int value )
   {
     double damages = 0.;
 
@@ -442,7 +432,6 @@ namespace ghost
   void Unit::swap( Unit &other )
   {
     std::swap(this->id, other.id);
-    std::swap(this->value, other.value);
     std::swap(this->data, other.data);
     std::swap(this->coord, other.coord);
   }
@@ -454,7 +443,6 @@ namespace ghost
       << "Full name: " << u.getFullName() << endl
       << "Coord: (" << u.coord.x << ", " << u.coord.y << ")" << endl 
       << "Id num: " << u.id << endl
-      << "Value: " <<  u.value << endl
       << u.data;
     
     return os;
