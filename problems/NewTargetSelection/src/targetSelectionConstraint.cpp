@@ -40,8 +40,8 @@ using namespace std;
 using namespace ghost;
 
 
-TargetSelectionConstraint::TargetSelectionConstraint( vector<Variable> variables, Unit currUnit, vector<UnitEnemy> enemies) 
-	: Constraint<Variable>(&variables), currUnit(currUnit), enemies(enemies) {}
+TargetSelectionConstraint::TargetSelectionConstraint( vector<Variable>* variables, Unit currUnit, vector<UnitEnemy> enemies) 
+	: Constraint<Variable>(variables), currUnit(currUnit), enemies(enemies) {}
 
 double TargetSelectionConstraint::required_cost() const
 {
@@ -50,7 +50,6 @@ double TargetSelectionConstraint::required_cost() const
     // 1. u can shoot
     // 2. u has at least one living reachable target in its range
     // 3. t is the dummy target (-1) or t in unreachable from u or t is dead
-    cout << "Constraint cost" << endl;
 	if( currUnit.canShoot() && !currUnit.getLivingEnemiesInRange(enemies).empty() 
 		&& ( variables->at(0).get_value() == -1 || !enemies.at(variables->at(0).get_value()).isInRangeAndAlive(currUnit) ) ) 
 	{

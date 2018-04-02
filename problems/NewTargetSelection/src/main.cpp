@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
 	vector<TargetSelectionConstraint> constraints;
 	for(int i = 0; i < 12; ++i) {
 		//TargetSelectionConstraint constraint(v, units[i], enemies);
-		constraints.push_back({variables, units[i], enemies});
+		constraints.push_back({&variables, units[i], enemies});
 	}
 	
 	MaxDamage mdobj(units, enemies);

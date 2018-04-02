@@ -56,14 +56,18 @@ MaxDamage::MaxDamage( vector<Unit> allies,  vector<UnitEnemy> enemies)
 double MaxDamage::required_cost(vector<Variable> *vecVariables) const {
 	double damages =0;
 	vector<double> hits;
-    cout << "MaxDamage cost" << endl;
 
 	for(int i = 0; i < vecVariables->size(); ++i){
 		Variable currVar = vecVariables->at(i);
+
 		if(currVar.get_value() != -1) {
 			Unit currUnit = allies.at(i);
 			hits = currUnit.computeDamage(enemies);
+		cout << "test : " << i << endl;
+
 			for_each( begin(hits), end(hits), [&](double d){ damages +=d; });
+		cout << "test : " << i << endl;
+
 		}
 	}
 
@@ -80,7 +84,6 @@ MaxKill::MaxKill( vector<Unit> allies,  vector<UnitEnemy> enemies)
 double MaxKill::required_cost(vector<Variable> *vecVariables) const {
 	vector<double> hits;
 	vector<UnitEnemy> copyEnemies(enemies);
-    cout << "Maxkill cost" << endl;
 
 	for(int i = 0; i < vecVariables->size(); ++i){
 		Variable currVar = vecVariables->at(i);

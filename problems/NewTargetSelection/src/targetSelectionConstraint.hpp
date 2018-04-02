@@ -54,6 +54,6 @@ class TargetSelectionConstraint : public Constraint<Variable> {
 
 
 	public:
-		TargetSelectionConstraint( vector<Variable> variable,  Unit currUnit,  vector<UnitEnemy> enemies) ;
+		TargetSelectionConstraint( vector<Variable> *variable,  Unit currUnit,  vector<UnitEnemy> enemies) ;
 
 };

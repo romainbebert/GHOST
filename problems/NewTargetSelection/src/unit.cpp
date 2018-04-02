@@ -309,6 +309,7 @@ namespace ghost
   vector<double> Unit::computeDamage( vector<UnitEnemy> vecUnit ) const
   {
     vector<double> hits( vecUnit.size(), 0. );
+    cout << "test : " << endl;
 
     if( distanceFrom( vecUnit.at( value ) ) >= getRangeMin() && distanceFrom( vecUnit.at( value ) ) <= getRangeMax() )
     {
