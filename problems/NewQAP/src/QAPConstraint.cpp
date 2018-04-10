@@ -53,7 +53,7 @@ QAPConstraint::QAPConstraint( vector<Variable> *variables, int size)
 
 double QAPConstraint::required_cost() const
 {
-	vector<int> varValues;
+	/*vector<int> varValues;
 	for (int i = 0; i < size; ++i) {
 		varValues.emplace_back(variables->at(i).get_value());
 		#if DEBUG
@@ -74,5 +74,8 @@ double QAPConstraint::required_cost() const
 		//#endif
 		return 1.;
 	}
+	/*/
+	return 0;
+	//*/
 
 }

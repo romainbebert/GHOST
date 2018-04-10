@@ -63,10 +63,8 @@ double MaxDamage::required_cost(vector<Variable> *vecVariables) const {
 		if(currVar.get_value() != -1) {
 			Unit currUnit = allies.at(i);
 			hits = currUnit.computeDamage(enemies, currVar.get_value());
-		cout << "test : " << i << endl;
 
 			for_each( begin(hits), end(hits), [&](double d){ damages +=d; });
-		cout << "test : " << i << endl;
 
 		}
 	}
