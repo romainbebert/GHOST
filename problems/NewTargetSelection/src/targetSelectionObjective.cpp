@@ -43,18 +43,18 @@ using namespace ghost;
 /* TargetSelectionObjective */
 /****************************/
 
-TargetSelectionObjective::TargetSelectionObjective(  string name,  vector<Unit> allies,  vector<UnitEnemy> enemies ) 
+TargetSelectionObjective::TargetSelectionObjective(  string name,  vector<Unit> &allies,  vector<UnitEnemy> &enemies ) 
 													: Objective<Variable>(name), allies(allies), enemies(enemies)  { }
 
 /*************/
 /* MaxDamage */
 /*************/
 
-MaxDamage::MaxDamage( vector<Unit> allies,  vector<UnitEnemy> enemies) 
+MaxDamage::MaxDamage( vector<Unit> &allies,  vector<UnitEnemy> &enemies) 
 					: TargetSelectionObjective("MaxDamage", allies, enemies) {}
 
 double MaxDamage::required_cost(vector<Variable> *vecVariables) const {
-	double damages =0;
+	double damages = 0.;
 	vector<double> hits;
 
 	for(int i = 0; i < vecVariables->size(); ++i){
@@ -62,10 +62,9 @@ double MaxDamage::required_cost(vector<Variable> *vecVariables) const {
 
 		if(currVar.get_value() != -1) {
 			Unit currUnit = allies.at(i);
-			hits = currUnit.computeDamage(enemies, currVar.get_value());
+			hits = currUnit.computeDamage(&enemies, currVar.get_value());
 
 			for_each( begin(hits), end(hits), [&](double d){ damages +=d; });
-
 		}
 	}
 
@@ -76,7 +75,7 @@ double MaxDamage::required_cost(vector<Variable> *vecVariables) const {
 /* MaxKill */
 /***********/
 
-MaxKill::MaxKill( vector<Unit> allies,  vector<UnitEnemy> enemies) 
+MaxKill::MaxKill( vector<Unit> &allies,  vector<UnitEnemy> &enemies) 
 				: TargetSelectionObjective("MaxKill", allies, enemies) {}
 
 double MaxKill::required_cost(vector<Variable> *vecVariables) const {
@@ -87,7 +86,7 @@ double MaxKill::required_cost(vector<Variable> *vecVariables) const {
 		Variable currVar = vecVariables->at(i);
 		Unit currUnit = allies.at(i);
 		if(currVar.get_value() != -1) {
-			hits = currUnit.computeDamage(enemies, currVar.get_value());
+			hits = currUnit.computeDamage(&enemies, currVar.get_value());
 			for( int i = 0; i < allies.size(); ++i )
 				copyEnemies[i].data.hp -= hits[i];
 		}

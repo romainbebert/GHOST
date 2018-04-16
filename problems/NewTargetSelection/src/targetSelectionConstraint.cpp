@@ -40,7 +40,7 @@ using namespace std;
 using namespace ghost;
 
 
-TargetSelectionConstraint::TargetSelectionConstraint( vector<Variable>* variables, Unit currUnit, vector<UnitEnemy> enemies) 
+TargetSelectionConstraint::TargetSelectionConstraint( vector<Variable>* variables, Unit &currUnit, vector<UnitEnemy> &enemies) 
 	: Constraint<Variable>(variables), currUnit(currUnit), enemies(enemies) {}
 
 double TargetSelectionConstraint::required_cost() const

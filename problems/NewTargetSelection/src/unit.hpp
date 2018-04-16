@@ -213,9 +213,9 @@ namespace ghost
     inline bool isLinearSplash()	const { return data.doLinearSplash; }
     
     double doDamage( vector<UnitEnemy> &vecEnemy, int value );
-    vector<double> computeDamage( vector<UnitEnemy> vecEnemy, int value ) const;
-    vector<UnitEnemy> getEnemiesInRange(vector<UnitEnemy> enemies) const;
-    vector<UnitEnemy> getLivingEnemiesInRange(vector<UnitEnemy> enemies) const;
+    vector<double> computeDamage( vector<UnitEnemy> *vecEnemy, int value ) const;
+    vector<UnitEnemy> getEnemiesInRange(vector<UnitEnemy> &enemies) const;
+    vector<UnitEnemy> getLivingEnemiesInRange(vector<UnitEnemy> &enemies) const;
 
     //inline void	swapValue( Unit &other )	{ std::swap( value, other.value ); }
 

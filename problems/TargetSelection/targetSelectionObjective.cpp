@@ -152,9 +152,9 @@ namespace ghost
     {
       if( v.getValue() != -1 )
       {
-	hits = v.computeDamage( enemies );
-	for( int i = 0 ; i < copyEnemies.size() ; ++i )
-	  copyEnemies[i].data.hp -= hits[i];
+      	hits = v.computeDamage( enemies );
+      	for( int i = 0 ; i < copyEnemies.size() ; ++i )
+	     copyEnemies[i].data.hp -= hits[i];
       }
     }
 

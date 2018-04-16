@@ -43,11 +43,11 @@ using namespace ghost;
 
 class TargetSelectionObjective : public Objective<Variable> {
 	public:
-		TargetSelectionObjective( string name, vector<Unit> allies, vector<UnitEnemy> enemies);
+		TargetSelectionObjective( string name, vector<Unit> &allies, vector<UnitEnemy> &enemies);
 
 	protected:
-		vector<Unit> allies; 
-		vector<UnitEnemy> enemies;
+		vector<Unit> &allies; 
+		vector<UnitEnemy> &enemies;
 };
 
 /*************/
@@ -57,16 +57,16 @@ class MaxDamage : public TargetSelectionObjective {
 	double required_cost(vector<Variable> *vecVariables) const;
 
 	public:
-		MaxDamage( vector<Unit> allies,  vector<UnitEnemy> enemies);
+		MaxDamage( vector<Unit> &allies,  vector<UnitEnemy> &enemies);
 };
 
 /*************/
-/* MaxKill */
+/*  MaxKill  */
 /*************/
 class MaxKill : public TargetSelectionObjective {
 	double required_cost(vector<Variable> *vecVariables) const;
 
 	public:
-		MaxKill( vector<Unit> allies,  vector<UnitEnemy> enemies);
+		MaxKill( vector<Unit> &allies,  vector<UnitEnemy> &enemies);
 		
 };

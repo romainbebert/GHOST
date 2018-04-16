@@ -49,11 +49,11 @@ class TargetSelectionConstraint : public Constraint<Variable> {
 	double required_cost() const;
 
 	private:
-		Unit currUnit;
-		vector<UnitEnemy> enemies;
+		Unit &currUnit;
+		vector<UnitEnemy> &enemies;
 
 
 	public:
-		TargetSelectionConstraint( vector<Variable> *variable,  Unit currUnit,  vector<UnitEnemy> enemies) ;
+		TargetSelectionConstraint( vector<Variable> *variable,  Unit &currUnit,  vector<UnitEnemy> &enemies) ;
 
 };

@@ -65,7 +65,7 @@ int getLowestHPRatioUnit( const vector<int> &inRange, const vector<Unit> &vec )
 
 int main(int argc, char **argv) {
 	int sat = 20;
-	int opt = 30;
+	int opt = 60;
 	if( argc > 1 )
 		sat = stoi(argv[1]);
 	if( argc > 2 )
@@ -118,11 +118,9 @@ int main(int argc, char **argv) {
 		constraints.push_back({&variables, units[i], enemies});
 	}
 	
-	MaxDamage tsobj(units, enemies);
+	Solver<Variable, TargetSelectionConstraint> solver(variables, constraints,make_shared<MaxDamage>(units, enemies));
 
-	Solver<Variable, TargetSelectionConstraint> solver(variables, constraints,make_shared<MaxDamage>(tsobj));
-
-	double finalCost;
+double finalCost;
 vector<int> finalSolution;
 
 vector<int> inRange;
@@ -147,9 +145,9 @@ do {
 	if( none_of( begin(units), end(units), [&](Unit &u){return !u.isDead() && u.canShoot() && !u.getLivingEnemiesInRange(enemies).empty(); } )
 	&& none_of( begin(enemies), end(enemies), [&](UnitEnemy &e){return !e.isDead() && e.canShoot() && !getLivingEnemiesInRange(e, units).empty(); } ) ) 
 	{
-    	for_each( begin(units), end(units), [](Unit &u){u.oneStep();} );
-      	for_each( begin(enemies), end(enemies), [](UnitEnemy &e){e.oneStep();} );
-      	continue;
+    for_each( begin(units), end(units), [](Unit &u){u.oneStep();} );
+    for_each( begin(enemies), end(enemies), [](UnitEnemy &e){e.oneStep();} );
+    continue;
 	}
 
 	solver.solve( finalCost, finalSolution, sat, opt);
@@ -162,9 +160,8 @@ do {
 	totalDamages = 0.;
 	totalDamagesEnemy = 0.;
 
-	#if DEBUG
-		cout << "Turn " << tour++ << endl;
-		cout << ":::: My turn ::::" << endl;
+	#ifndef NDEBUG
+		cout << endl << ":::: My turn ::::" << endl;
 	#endif
 
 	for(int i = 0; i < enemies.size(); ++i)
@@ -172,18 +169,20 @@ do {
 
 	for(int i = 0; i < variables.size(); ++i)
 		if(!units.at(i).isDead()) {
+			//If canShoot && not assigned to -1, do damages
 			if( units.at(i).canShoot() && variables.at(i).get_value() != -1)
 				totalDamages += units.at(i).doDamage( copyEnemies, variables.at(i).get_value());
+			//if NOT, make step
 			else {
-				#if DEBUG 
-	  			cout << units.at(i).getFullName() << ":" << units.at(i).getId() << " HP=" << units.at(i).getHP() << ", wait=" << units.at(i).canShootIn() << " (value="<< variables.at(i).get_value() <<")" << endl;
+				#ifndef NDEBUG 
+	  			cout << units.at(i).getFullName() << ":" << i << " HP=" << units.at(i).getHP() << ", wait=" << units.at(i).canShootIn() << " (value="<< variables.at(i).get_value() <<")" << endl;
 				#endif
 	  			if( !units.at(i).canShoot() )
 	  				units.at(i).oneStep();
 			}
 		}
 
-	#if DEBUG
+	#ifndef NDEBUG
 		cout << "@@@@ Enemy's turn @@@@" << endl;
 	#endif
 
@@ -209,12 +208,12 @@ do {
 			if( enemies[i].canShoot() ) {
 				if( aimedUnits[i] != -1 )
 					totalDamagesEnemy += enemies.at(i).doDamageAgainst( aimedUnits[i], units, i );
-				#if DEBUG
+				#ifndef NDEBUG
 				else
 	    		cout << enemies[i].data.name << "@" << i << " HP=" << enemies[i].data.hp << ", wait=" << enemies[i].data.canShootIn << endl;	    
 				#endif
 	    } else {
-	    	#if DEBUG
+	    	#ifndef NDEBUG
 	  			cout << enemies[i].data.name << "@" << i << " HP=" << enemies[i].data.hp << ", wait=" << enemies[i].data.canShootIn << endl;
 				#endif
 	  		if( !enemies.at(i).canShoot() )
@@ -229,15 +228,17 @@ do {
 	deadUnits = count_if( begin(units), end(units), [](Unit &u){return u.isDead();});
 	deadEnemy = count_if( begin(enemies), end(enemies), [](UnitEnemy &e){return e.isDead();});
 
-	#if DEBUG 
+	#ifndef NDEBUG 
 		cout << "XXXX Turn's over XXXX" << endl
 				 << "Total damages from you : " << totalDamages << endl
 				 << "Total damages from the enemy : " << totalDamagesEnemy << endl 
 				 << "Number of dead units : " << deadUnits << endl
 				 << "Number of dead enemies : " << deadEnemy << endl;
+		//cout << "Press enter for next turn" << endl;
+		//cin.get();
 	#endif
 
-} while( deadUnits < numUnits && deadEnemy < numEnemy);
+} while( deadUnits < numUnits && deadEnemy < numEnemy && tour < 1000);
 
 double total_hp = 0.;
 
@@ -253,7 +254,7 @@ if( count_if( begin(enemies), end(enemies), [&](UnitEnemy &e){ return e.isDead()
 				 << "Diff : " << deadEnemy - deadUnits << endl 
 				 << "HP : " << total_hp << endl;
 
-		#if DEBUG
+		#ifndef NDEBUG
 			for( int i = 0; i < units.size(); ++i)
 	      cout << units.at(i).getFullName() << ":" << i << " " << units.at(i).getHP() << " HP left" << endl;
 	  #endif
@@ -269,7 +270,7 @@ if( count_if( begin(enemies), end(enemies), [&](UnitEnemy &e){ return e.isDead()
 				 << "Diff : " << deadEnemy - deadUnits << endl 
 				 << "HP : " << total_hp << endl;
 
-		#if DEBUG
+		#ifndef NDEBUG
 			for( int i = 0; i < enemies.size(); ++i)
 	      cout << enemies.at(i).data.name << "@" << i << " " << enemies.at(i).data.hp << " HP left" << endl;
 	  #endif
