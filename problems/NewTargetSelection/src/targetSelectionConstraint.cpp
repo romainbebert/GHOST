@@ -41,7 +41,7 @@ using namespace ghost;
 
 
 TargetSelectionConstraint::TargetSelectionConstraint( vector<Variable>* variables, Unit &currUnit, vector<UnitEnemy> &enemies) 
-	: Constraint<Variable>(variables), currUnit(currUnit), enemies(enemies) {}
+	: Constraint(variables), currUnit(currUnit), enemies(enemies) {}
 
 double TargetSelectionConstraint::required_cost() const
 {

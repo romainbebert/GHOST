@@ -44,7 +44,7 @@
 using namespace std;
 using namespace ghost;
 
-class TargetSelectionConstraint : public Constraint<Variable> {
+class TargetSelectionConstraint : public Constraint {
 
 	double required_cost() const;
 

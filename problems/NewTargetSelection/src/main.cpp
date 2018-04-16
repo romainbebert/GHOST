@@ -112,10 +112,10 @@ int main(int argc, char **argv) {
   for( int i = 0 ; i < units.size() ; ++i )
     enemies.emplace_back( UnitEnemy( units.at(i).getData(), { units.at(i).getX(), -units.at(i).getY() } ) );
 
-	vector<TargetSelectionConstraint> constraints;
+	vector< shared_ptr<TargetSelectionConstraint> > constraints;
 	for(int i = 0; i < 12; ++i) {
 		//TargetSelectionConstraint constraint(v, units[i], enemies);
-		constraints.push_back({&variables, units[i], enemies});
+		constraints.emplace_back(make_shared<TargetSelectionConstraint>(&variables, units[i], enemies));
 	}
 	
 	Solver<Variable, TargetSelectionConstraint> solver(variables, constraints,make_shared<MaxDamage>(units, enemies));
