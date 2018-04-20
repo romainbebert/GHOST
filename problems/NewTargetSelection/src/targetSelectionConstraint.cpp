@@ -40,8 +40,8 @@ using namespace std;
 using namespace ghost;
 
 
-TargetSelectionConstraint::TargetSelectionConstraint( vector<Variable>* variables, Unit &currUnit, vector<UnitEnemy> &enemies) 
-	: Constraint(variables), currUnit(currUnit), enemies(enemies) {}
+TargetSelectionConstraint::TargetSelectionConstraint( vector<Variable>* variables, Unit &currUnit, vector<UnitEnemy> &enemies, int index) 
+	: Constraint(variables), currUnit(currUnit), enemies(enemies), index(index) {}
 
 double TargetSelectionConstraint::required_cost() const
 {
@@ -51,12 +51,12 @@ double TargetSelectionConstraint::required_cost() const
     // 2. u has at least one living reachable target in its range
     // 3. t is the dummy target (-1) or t in unreachable from u or t is dead
 	if( currUnit.canShoot() && !currUnit.getLivingEnemiesInRange(enemies).empty() 
-		&& ( variables->at(0).get_value() == -1 || !enemies.at(variables->at(0).get_value()).isInRangeAndAlive(currUnit) ) ) 
+		&& ( variables->at(index).get_value() == -1 || !enemies.at(variables->at(index).get_value()).isInRangeAndAlive(currUnit) ) ) 
 	{
 		++conflicts;
 	}
 	//If no enemies in range and variable isn't set to -1
-	if( currUnit.getLivingEnemiesInRange(enemies).empty() && variables->at(0).get_value() != -1 ) 
+	if( currUnit.getLivingEnemiesInRange(enemies).empty() && variables->at(index).get_value() != -1 ) 
 		++conflicts;
 
 	return conflicts;

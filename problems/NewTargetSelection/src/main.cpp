@@ -64,8 +64,8 @@ int getLowestHPRatioUnit( const vector<int> &inRange, const vector<Unit> &vec )
 }
 
 int main(int argc, char **argv) {
-	int sat = 20;
-	int opt = 60;
+	int sat = 30;
+	int opt = 100;
 	if( argc > 1 )
 		sat = stoi(argv[1]);
 	if( argc > 2 )
@@ -115,10 +115,10 @@ int main(int argc, char **argv) {
 	vector< shared_ptr<TargetSelectionConstraint> > constraints;
 	for(int i = 0; i < 12; ++i) {
 		//TargetSelectionConstraint constraint(v, units[i], enemies);
-		constraints.emplace_back(make_shared<TargetSelectionConstraint>(&variables, units[i], enemies));
+		constraints.emplace_back(make_shared<TargetSelectionConstraint>(&variables, units[i], enemies, i));
 	}
 	
-	Solver<Variable, TargetSelectionConstraint> solver(variables, constraints,make_shared<MaxDamage>(units, enemies));
+	Solver<Variable, TargetSelectionConstraint> solver(variables, constraints,make_shared<MaxKill>(units, enemies));
 
 double finalCost;
 vector<int> finalSolution;
@@ -234,8 +234,8 @@ do {
 				 << "Total damages from the enemy : " << totalDamagesEnemy << endl 
 				 << "Number of dead units : " << deadUnits << endl
 				 << "Number of dead enemies : " << deadEnemy << endl;
-		//cout << "Press enter for next turn" << endl;
-		//cin.get();
+		cout << "Press enter for next turn" << endl;
+		cin.get();
 	#endif
 
 } while( deadUnits < numUnits && deadEnemy < numEnemy && tour < 1000);
