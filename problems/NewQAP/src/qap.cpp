@@ -161,8 +161,8 @@ int main( int argc, char* argv[] )
   for(int i = 0; i < size; ++i)
   	variables.push_back({""+i,""+i,domain, i});
 
-  vector<QAPConstraint> constraints;
-  constraints.push_back({&variables, size});
+  vector< shared_ptr<QAPConstraint> > constraints;
+  constraints.emplace_back(make_shared<QAPConstraint>(&variables, size));
 
   QAPObjective objective( "Min Weight", size, matrix_distances, matrix_flows);
   Solver<Variable, QAPConstraint> solver(variables, constraints, make_shared<QAPObjective>(objective), true);

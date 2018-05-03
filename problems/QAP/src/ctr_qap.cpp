@@ -7,7 +7,7 @@ double QAPConstraint::required_cost() const
     for( int j = i + 1 ; j < _size ; ++j )
       sum += ( _matrix_distances[ variables->at(i).get_value() ][ variables->at(j).get_value() ] * _matrix_flows[i][j] );
   
-  std::max( 0, sum - _X );
+  return std::max( 0, sum - _X );
 }
 
 QAPConstraint::QAPConstraint( vector< Variable > *variables,
@@ -15,7 +15,7 @@ QAPConstraint::QAPConstraint( vector< Variable > *variables,
 			      int X,
 			      vector< vector<int> > &md,
 			      vector< vector<int> > &mf )
-  : Constraint<Variable>	( variables ),
+  : Constraint	( variables ),
   _size				( size ),
   _X				( X ),
   _matrix_distances		( md ),

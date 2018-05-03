@@ -9,7 +9,7 @@
 using namespace std;
 using namespace ghost;
 
-class QAPConstraint : public Constraint<Variable>
+class QAPConstraint : public Constraint
 {
   int _size;
   int _X;

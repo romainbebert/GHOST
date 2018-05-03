@@ -140,20 +140,21 @@ int main( int argc, char* argv[] )
   vector< vector<int> > matrix_flows;
 
   process_input( argv[1], size, X, matrix_distances, matrix_flows );
-
   vector<Variable> variables;
+  vector<int> domain(size);
+  iota(domain.begin(),domain.end(), 0);
   for( int i = 0 ; i < size ; ++i )
-    variables.emplace_back( ""+i, ""+i, size, 1 );
+    variables.emplace_back( ""+i, ""+i, domain, i );
   QAPConstraint constraint( &variables, size, X, matrix_distances, matrix_flows );
 
-  vector< QAPConstraint > constraints { constraint };
+  vector< shared_ptr<QAPConstraint> > constraints { make_shared<QAPConstraint>(constraint) };
   
   Solver<Variable, QAPConstraint> solver( variables, constraints, true );
 
   double cost = 0.;
   vector<int> solution( size, 0 );
     
-  solver.solve( cost, solution, 10 );
+  solver.solve( cost, solution, 100 );
 
   if( cost == 0. )
   {

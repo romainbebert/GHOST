@@ -40,7 +40,7 @@
 using namespace std;
 using namespace ghost;
 
-class QAPConstraint : public Constraint<Variable> {
+class QAPConstraint : public Constraint {
 
 	double required_cost() const override;
 

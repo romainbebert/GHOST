@@ -41,7 +41,7 @@ using namespace ghost;
 
 
 QAPConstraint::QAPConstraint( vector<Variable> *variables, int size) 
-	: Constraint<Variable>(variables), size(size) {
+	: Constraint(variables), size(size) {
 	domain =  vector<int>(size);
 	iota(domain.begin(),domain.end(), 0);
 	#if DEBUG

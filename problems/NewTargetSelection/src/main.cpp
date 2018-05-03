@@ -64,8 +64,8 @@ int getLowestHPRatioUnit( const vector<int> &inRange, const vector<Unit> &vec )
 }
 
 int main(int argc, char **argv) {
-	int sat = 30;
-	int opt = 100;
+	int sat = 20;
+	int opt = 60;
 	if( argc > 1 )
 		sat = stoi(argv[1]);
 	if( argc > 2 )
@@ -73,6 +73,22 @@ int main(int argc, char **argv) {
 
 	vector<int> domain(15);
 	iota(domain.begin(),domain.end(), -1);
+	/*vector<Variable> vecVariables[14] = {	
+		{Variable("Terran_Marine","Terran_Marine",domain,-1)},
+		{Variable("Terran_Marine","Terran_Marine",domain,-1)},
+		{Variable("Terran_Marine","Terran_Marine",domain,-1)},
+		{Variable("Terran_Marine","Terran_Marine",domain,-1)},
+		{Variable("Terran_Marine","Terran_Marine",domain,-1)},
+		{Variable("Terran_Goliath","Terran_Goliath",domain,-1)},
+		{Variable("Terran_Vulture","Terran_Vulture",domain,-1)},
+		{Variable("Terran_Vulture","Terran_Vulture",domain,-1)},
+		{Variable("Terran_Goliath","Terran_Goliath",domain,-1)},
+		{Variable("Terran_Siege_Tank_Tank_Mode","Terran_Siege_Tank_Tank_Mode",domain,-1)},
+		{Variable("Terran_Gost","Terran_Gost",domain,-1)},
+		{Variable("Terran_Gost","Terran_Gost",domain,-1)},
+		{Variable("Terran_Siege_Tank_Tank_Mode","Terran_Siege_Tank_Tank_Mode",domain,-1)},
+		{Variable("Terran_Siege_Tank_Siege_Mode","Terran_Siege_Tank_Siege_Mode",domain,-1)}
+	};*/
 	vector<Variable> variables {
 		Variable("Terran_Marine","Terran_Marine",domain,-1),
 		Variable("Terran_Marine","Terran_Marine",domain,-1),
@@ -89,7 +105,6 @@ int main(int argc, char **argv) {
 		Variable("Terran_Siege_Tank_Tank_Mode","Terran_Siege_Tank_Tank_Mode",domain,-1),
 		Variable("Terran_Siege_Tank_Siege_Mode","Terran_Siege_Tank_Siege_Mode",domain,-1)
 	};
-
 	// Define Units
   vector< Unit > units {
     Unit( unitOf["Terran_Marine"], {30, 30} ), // 0
@@ -115,7 +130,7 @@ int main(int argc, char **argv) {
 	vector< shared_ptr<TargetSelectionConstraint> > constraints;
 	for(int i = 0; i < 12; ++i) {
 		//TargetSelectionConstraint constraint(v, units[i], enemies);
-		constraints.emplace_back(make_shared<TargetSelectionConstraint>(&variables, units[i], enemies, i));
+		constraints.emplace_back(make_shared<TargetSelectionConstraint>(&(variables), units[i], enemies, i));
 	}
 	
 	Solver<Variable, TargetSelectionConstraint> solver(variables, constraints,make_shared<MaxKill>(units, enemies));
