@@ -44,7 +44,7 @@ using namespace ghost;
 /****************************/
 
 TargetSelectionObjective::TargetSelectionObjective(  string name,  vector<Unit> &allies,  vector<UnitEnemy> &enemies ) 
-													: Objective<Variable>(name), allies(allies), enemies(enemies)  { }
+													: Objective(name), allies(allies), enemies(enemies)  { }
 
 /*************/
 /* MaxDamage */
@@ -56,14 +56,12 @@ MaxDamage::MaxDamage( vector<Unit> &allies,  vector<UnitEnemy> &enemies)
 double MaxDamage::required_cost(vector<Variable> *vecVariables) const {
 	double damages = 0.;
 	vector<double> hits;
+	vector<Variable> &var = *vecVariables;
+	for(int i = 0; i < allies.size(); ++i){
+		//Variable currVar = var[i];
 
-	for(int i = 0; i < vecVariables->size(); ++i){
-		Variable currVar = vecVariables->at(i);
-
-		if(currVar.get_value() != -1) {
-			Unit currUnit = allies.at(i);
-			hits = currUnit.computeDamage(&enemies, currVar.get_value());
-
+		if(var[i].get_value() != -1) {
+			hits = allies[i].computeDamage(&enemies, var[i].get_value());
 			for_each( begin(hits), end(hits), [&](double d){ damages +=d; });
 		}
 	}
@@ -78,15 +76,13 @@ double MaxDamage::required_cost(vector<Variable> *vecVariables) const {
 MaxKill::MaxKill( vector<Unit> &allies,  vector<UnitEnemy> &enemies) 
 				: TargetSelectionObjective("MaxKill", allies, enemies) {}
 
-double MaxKill::required_cost(vector<Variable> *vecVariables) const {
+double MaxKill::required_cost(vector<Variable> *variables) const {
 	vector<double> hits;
 	vector<UnitEnemy> copyEnemies(enemies);
 
-	for(int i = 0; i < vecVariables->size(); ++i){
-		Variable currVar = vecVariables->at(i);
-		Unit currUnit = allies.at(i);
-		if(currVar.get_value() != -1) {
-			hits = currUnit.computeDamage(&enemies, currVar.get_value());
+	for(int i = 0; i < variables->size(); ++i){
+		if((*variables)[i].get_value() != -1) {
+			hits = allies[i].computeDamage(&enemies, (*variables)[i].get_value());
 			for( int i = 0; i < allies.size(); ++i )
 				copyEnemies[i].data.hp -= hits[i];
 		}

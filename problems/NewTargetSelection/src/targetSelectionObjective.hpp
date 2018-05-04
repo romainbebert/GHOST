@@ -41,7 +41,7 @@
 using namespace std;
 using namespace ghost;
 
-class TargetSelectionObjective : public Objective<Variable> {
+class TargetSelectionObjective : public Objective {
 	public:
 		TargetSelectionObjective( string name, vector<Unit> &allies, vector<UnitEnemy> &enemies);
 

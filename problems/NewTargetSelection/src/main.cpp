@@ -64,12 +64,15 @@ int getLowestHPRatioUnit( const vector<int> &inRange, const vector<Unit> &vec )
 }
 
 int main(int argc, char **argv) {
+	int experimentSize = 1;
 	int sat = 20;
 	int opt = 60;
 	if( argc > 1 )
-		sat = stoi(argv[1]);
+		experimentSize = stoi(argv[1]);
 	if( argc > 2 )
-		opt = stoi(argv[2]);
+		sat = stoi(argv[2]);
+	if( argc > 3 )
+		opt = stoi(argv[3]);
 
 	vector<int> domain(15);
 	iota(domain.begin(),domain.end(), -1);
@@ -89,6 +92,9 @@ int main(int argc, char **argv) {
 		{Variable("Terran_Siege_Tank_Tank_Mode","Terran_Siege_Tank_Tank_Mode",domain,-1)},
 		{Variable("Terran_Siege_Tank_Siege_Mode","Terran_Siege_Tank_Siege_Mode",domain,-1)}
 	};*/
+
+	for( int k = 0; k < experimentSize; ++k ) 
+	{
 	vector<Variable> variables {
 		Variable("Terran_Marine","Terran_Marine",domain,-1),
 		Variable("Terran_Marine","Terran_Marine",domain,-1),
@@ -127,13 +133,13 @@ int main(int argc, char **argv) {
   for( int i = 0 ; i < units.size() ; ++i )
     enemies.emplace_back( UnitEnemy( units.at(i).getData(), { units.at(i).getX(), -units.at(i).getY() } ) );
 
-	vector< shared_ptr<TargetSelectionConstraint> > constraints;
+	vector< shared_ptr<Constraint> > constraints;
 	for(int i = 0; i < 12; ++i) {
 		//TargetSelectionConstraint constraint(v, units[i], enemies);
 		constraints.emplace_back(make_shared<TargetSelectionConstraint>(&(variables), units[i], enemies, i));
 	}
 	
-	Solver<Variable, TargetSelectionConstraint> solver(variables, constraints,make_shared<MaxKill>(units, enemies));
+	Solver solver(variables, constraints,make_shared<MaxKill>(units, enemies));
 
 double finalCost;
 vector<int> finalSolution;
@@ -253,9 +259,10 @@ do {
 		cin.get();
 	#endif
 
-} while( deadUnits < numUnits && deadEnemy < numEnemy && tour < 1000);
+} while( deadUnits < numUnits && deadEnemy < numEnemy && tour < 150);
 
 double total_hp = 0.;
+double enemy_hp = 0.;
 
 if( count_if( begin(enemies), end(enemies), [&](UnitEnemy &e){ return e.isDead(); }) == numEnemy
 	&& count_if( begin(units), end(units), [&](Unit &u){ return u.isDead(); }) < numUnits )
@@ -292,6 +299,7 @@ if( count_if( begin(enemies), end(enemies), [&](UnitEnemy &e){ return e.isDead()
 	} else {
 		cout << endl << "Draw!" << endl;
 	}
+}
 }
 
 
