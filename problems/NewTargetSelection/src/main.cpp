@@ -65,8 +65,8 @@ int getLowestHPRatioUnit( const vector<int> &inRange, const vector<Unit> &vec )
 
 int main(int argc, char **argv) {
 	int experimentSize = 1;
-	int sat = 20;
-	int opt = 60;
+	int sat = 50;
+	int opt = 150;
 	if( argc > 1 )
 		experimentSize = stoi(argv[1]);
 	if( argc > 2 )
@@ -139,7 +139,7 @@ int main(int argc, char **argv) {
 		constraints.emplace_back(make_shared<TargetSelectionConstraint>(&(variables), units[i], enemies, i));
 	}
 	
-	Solver solver(variables, constraints,make_shared<MaxKill>(units, enemies));
+	Solver solver(variables, constraints,make_shared<MaxDamage>(units, enemies));
 
 double finalCost;
 vector<int> finalSolution;
@@ -203,6 +203,9 @@ do {
 			}
 		}
 
+		std::cout << "Total Damage : " << totalDamages << endl;
+
+
 	#ifndef NDEBUG
 		cout << "@@@@ Enemy's turn @@@@" << endl;
 	#endif
@@ -255,14 +258,12 @@ do {
 				 << "Total damages from the enemy : " << totalDamagesEnemy << endl 
 				 << "Number of dead units : " << deadUnits << endl
 				 << "Number of dead enemies : " << deadEnemy << endl;
-		cout << "Press enter for next turn" << endl;
-		cin.get();
+		//cout << "Press enter for next turn" << endl;
+		//cin.get();
 	#endif
-
 } while( deadUnits < numUnits && deadEnemy < numEnemy && tour < 150);
 
 double total_hp = 0.;
-double enemy_hp = 0.;
 
 if( count_if( begin(enemies), end(enemies), [&](UnitEnemy &e){ return e.isDead(); }) == numEnemy
 	&& count_if( begin(units), end(units), [&](Unit &u){ return u.isDead(); }) < numUnits )
@@ -283,9 +284,9 @@ if( count_if( begin(enemies), end(enemies), [&](UnitEnemy &e){ return e.isDead()
 	} else if( count_if( begin(enemies), end(enemies), [&](UnitEnemy &e){ return e.isDead(); }) < numEnemy
 	&& count_if( begin(units), end(units), [&](Unit &u){ return u.isDead(); }) == numUnits )
 	{ 
-		for(const auto &u : units )
+		for(const auto &u : enemies )
 			if( !u.isDead() ) 
-				total_hp += u.getHP();
+				total_hp += u.data.hp;
 
 		cout << endl << "--------------------------------------------------------" << endl << endl
 				 << "Winner: The enemy..." << endl 
